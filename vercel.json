@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/run-engines",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}

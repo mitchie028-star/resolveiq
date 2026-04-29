@@ -54,9 +54,7 @@ export async function getDashboardData() {
       .eq("status", "resolved"),
 
     // For alert quality
-    supabase
-      .from("alerts")
-      .select("severity")
+    supabase.from("alerts").select("severity"),
   ])
 
   const active = activeAlertsRes.count ?? 0
@@ -74,40 +72,47 @@ export async function getDashboardData() {
       ? 0
       : Math.round((resolved / totalAlerts) * 100)
 
-  // Avg resolution time
+  // Avg resolution time (SAFE)
   let avgResolutionHours = 0
-  if (resolutionTimeRes.data?.length) {
-    const times = resolutionTimeRes.data
-      .map((a: any) => {
-        if (!a.resolved_at) return null
-        return (
-          new Date(a.resolved_at).getTime() -
-          new Date(a.created_at).getTime()
-        ) / (1000 * 60 * 60)
-      })
-      .filter(Boolean)
 
-    if (times.length > 0) {
-      avgResolutionHours = Math.round(
-        times.reduce((a: number, b: number) => a + b, 0) / times.length
-      )
-    }
+  const times =
+    resolutionTimeRes.data
+      ?.map((a: any) => {
+        if (!a?.created_at || !a?.resolved_at) return null
+
+        const created = new Date(a.created_at).getTime()
+        const resolved = new Date(a.resolved_at).getTime()
+
+        // Guard against invalid dates
+        if (isNaN(created) || isNaN(resolved)) return null
+
+        return (resolved - created) / (1000 * 60 * 60)
+      })
+      .filter((t: number | null): t is number => t !== null) ?? []
+
+  if (times.length > 0) {
+    const total = times.reduce((sum, t) => sum + t, 0)
+    avgResolutionHours = Math.round(total / times.length)
   }
 
   // Message efficiency
   const messagesPerAlert =
     totalAlerts === 0 ? 0 : messages / totalAlerts
 
-  // Alert quality
+  // Alert quality (SAFE)
   const highSeverityCount =
     highSeverityRes.data?.filter((a: any) =>
-      ["high", "critical"].includes(a.severity)
+      ["high", "critical"].includes(a?.severity)
     ).length ?? 0
 
   const highSeverityRatio =
     totalAlerts === 0
       ? 0
       : Math.round((highSeverityCount / totalAlerts) * 100)
+
+  // -------------------------
+  // 📦 Return
+  // -------------------------
 
   return {
     orders: ordersRes.count ?? 0,

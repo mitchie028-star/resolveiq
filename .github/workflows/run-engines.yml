@@ -1,0 +1,15 @@
+name: Run Engines
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call Engine Endpoint
+        run: |
+          curl https://your-vercel-url/api/run-engines

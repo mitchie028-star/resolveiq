@@ -2,7 +2,7 @@ name: Run Engines
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/5 * * * *" # every 5 minutes
   workflow_dispatch:
 
 jobs:
@@ -12,4 +12,4 @@ jobs:
     steps:
       - name: Call Engine Endpoint
         run: |
-          curl https://your-vercel-url/api/run-engines
+          curl -s -o /dev/null -w "%{http_code}" https://resolveiq-f7ed.vercel.app/api/run-engines

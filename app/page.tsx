@@ -1,285 +1,207 @@
-import Image from "next/image"
 import { getDashboardData } from "@/lib/dashboard-data"
-import ActivityTicker from "@/components/ActivityTicker"
-import WorstCases from "@/components/WorstCases"
 
 export const dynamic = "force-dynamic"
 
-export default async function Home() {
+export default async function DashboardPage() {
   const data = await getDashboardData()
 
+  const alerts = data.alertsList ?? []
+  const timeline = data.timeline ?? []
+
   return (
-    <main className="p-8 space-y-8 bg-gray-50 min-h-screen">
-
-      {/* 🔥 HEADER */}
+    <main className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+      {/* =============================
+          TOP BAR
+      ============================= */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Image
-            src="/logo.png"
-            alt="ResolvedIQ Logo"
-            width={60}
-            height={60}
-            className="rounded-lg"
-          />
-
-          <div>
-            <h1 className="text-3xl font-bold">ResolvedIQ Dashboard</h1>
-            <p className="text-gray-600 text-sm">
-              Proactive CX. Smarter Support. Happier Customers.
-            </p>
-          </div>
+        <div className="text-sm text-neutral-600">
+          <span className="text-green-600 font-medium">● Live</span>{" "}
+          Monitoring {data.orders} orders
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 text-xs text-gray-500">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+        <div className="text-sm font-medium">
+          ${data.impact?.estimatedSavings ?? 0} saved
+        </div>
+      </div>
+
+      {/* =============================
+          HERO: ACTION REQUIRED
+      ============================= */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-semibold">
+            Action Required
+          </h1>
+
+          {alerts.length > 0 && (
+            <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">
+              {alerts.length} urgent
             </span>
-            Live Simulation
-          </div>
-
-          <div className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
-            Demo Mode
-          </div>
+          )}
         </div>
-      </div>
 
-      {/* ⚡ ACTIVITY */}
-      <ActivityTicker actions={data.actionsList} />
-
-      {/* 💰 IMPACT */}
-      <ImpactBar
-        ticketsAvoided={data.completedActions}
-        refundsIssued={
-          data.actionsList.filter((a: any) => a.action_type === "refund").length
-        }
-        estSavings={data.completedActions * 3}
-      />
-
-      {/* 🧠 KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-4">
-        <Card title="Orders" value={data.orders} />
-        <Card title="Active Issues" value={data.activeAlerts} />
-        <Card title="Resolved Issues" value={data.resolvedAlerts} />
-        <Card title="Customer Updates" value={data.messages} />
-        <Card title="Auto-Resolution Rate" value={`${data.resolutionRate}%`} />
-        <Card title="Automation Efficiency" value={data.messagesPerAlert} />
-        <Card title="Critical Risk Rate" value={`${data.highSeverityRatio}%`} />
-      </div>
-
-      {/* 🚨 WORST CASES */}
-      <WorstCases />
-
-      {/* ⚡ ACTION PIPELINE */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card title="Pending Actions" value={data.pendingActions} />
-        <Card title="Failed Actions" value={data.failedActions} />
-        <Card title="Completed Actions" value={data.completedActions} />
-
-        <SystemStatus
-          pending={data.pendingActions}
-          failed={data.failedActions}
-        />
-      </div>
-
-      {/* ⚡ PERFORMANCE */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Panel title="⚡ Performance">
-          <Stat
-            label="Avg Resolution Time"
-            value={`${data.avgResolutionHours ?? 0} hrs`}
-          />
-        </Panel>
-
-        <Panel title="📊 System Health">
-          <Stat
-            label="Alerts vs Resolved"
-            value={`${data.resolvedAlerts} resolved / ${data.activeAlerts} active`}
-          />
-        </Panel>
-      </div>
-
-      {/* 🚨 ALERTS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Panel title="🚨 Active Alerts">
-          {data.alertsList.length === 0 ? (
-            <Empty text="No active alerts" />
-          ) : (
-            <div className="space-y-3">
-              {data.alertsList.map((a: any) => (
-                <AlertCard key={a.id} alert={a} />
-              ))}
-            </div>
-          )}
-        </Panel>
-
-        <Panel title="✅ Resolved Alerts">
-          {data.resolvedList.length === 0 ? (
-            <Empty text="No resolved alerts" />
-          ) : (
-            <div className="space-y-3">
-              {data.resolvedList.map((a: any) => (
-                <AlertCard key={a.id} alert={a} resolved />
-              ))}
-            </div>
-          )}
-        </Panel>
-      </div>
-
-      {/* ⚙️ ACTIONS */}
-      <Panel title="⚙️ Live Actions">
-        {data.actionsList.length === 0 ? (
-          <Empty text="No actions yet" />
+        {alerts.length === 0 ? (
+          <div className="text-sm text-neutral-500 border rounded-xl p-4">
+            No active risks detected.
+          </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="text-left text-gray-500 border-b">
-                <tr>
-                  <th className="py-2">Action</th>
-                  <th>Order</th>
-                  <th>Status</th>
-                  <th>Retries</th>
-                  <th>Last Attempt</th>
-                  <th>Next Retry</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.actionsList.map((a: any) => (
-                  <tr key={a.id} className="border-b">
-                    <td className="py-2 font-medium">
-                      {formatAction(a.action_type)}
-                    </td>
-                    <td>{a.order_id}</td>
-                    <td><StatusBadge status={a.status} /></td>
-                    <td>{a.retry_count ?? 0}</td>
-                    <td className="text-xs text-gray-400">
-                      {a.last_attempt_at
-                        ? new Date(a.last_attempt_at).toLocaleString()
-                        : "—"}
-                    </td>
-                    <td className="text-xs text-gray-400">
-                      {a.next_retry_at
-                        ? new Date(a.next_retry_at).toLocaleTimeString()
-                        : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="space-y-3">
+            {alerts.map((a: any) => (
+              <div
+                key={a.id}
+                className="border rounded-xl p-4 flex justify-between gap-4 hover:shadow-sm transition"
+              >
+                {/* LEFT */}
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{a.order_id}</span>
+                    <SeverityBadge severity={a.severity} />
+                  </div>
+
+                  <div className="text-sm text-neutral-600">
+                    {a.message}
+                  </div>
+
+                  {a.signals?.length > 0 && (
+                    <div className="text-xs text-neutral-500">
+                      {a.signals.join(" • ")}
+                    </div>
+                  )}
+                </div>
+
+                {/* RIGHT CTA */}
+                <div className="flex items-center">
+                  <button className="text-sm bg-black text-white px-3 py-1.5 rounded-lg hover:opacity-90">
+                    {a.severity === "critical"
+                      ? "Refund"
+                      : "Resolve"}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
-      </Panel>
+      </section>
+
+      {/* =============================
+          2-COLUMN SECTION
+      ============================= */}
+      <section className="grid md:grid-cols-2 gap-6">
+        {/* ACTIVITY */}
+        <div className="bg-white border rounded-2xl p-5 space-y-4">
+          <h2 className="text-sm font-medium text-neutral-500">
+            Activity
+          </h2>
+
+          {timeline.length === 0 ? (
+            <div className="text-sm text-neutral-500">
+              No recent activity.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {timeline.slice(0, 6).map((t: any) => (
+                <div
+                  key={t.id}
+                  className="flex justify-between text-sm"
+                >
+                  <div className="text-neutral-700">
+                    {formatAction(t.step)} →{" "}
+                    <span className="text-neutral-500">
+                      {t.orderId}
+                    </span>
+                  </div>
+
+                  <div className="text-neutral-400 text-xs">
+                    {formatTime(t.createdAt)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* METRICS */}
+        <div className="bg-white border rounded-2xl p-5 space-y-4">
+          <h2 className="text-sm font-medium text-neutral-500">
+            Performance
+          </h2>
+
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <Metric
+              label="Automation"
+              value={`${data.automationRate ?? 0}%`}
+            />
+            <Metric
+              label="Avg Resolution"
+              value={`${data.avgResolutionHours ?? 0}h`}
+            />
+            <Metric
+              label="Refunds"
+              value={data.impact?.refunded ?? 0}
+            />
+            <Metric
+              label="Prevented"
+              value={data.impact?.prevented ?? 0}
+            />
+          </div>
+        </div>
+      </section>
     </main>
   )
 }
 
-/* ---------------- UI COMPONENTS ---------------- */
+/* =============================
+   COMPONENTS
+============================= */
 
-function Card({ title, value }: any) {
-  return (
-    <div className="bg-white p-4 rounded-2xl shadow-sm border">
-      <p className="text-xs text-gray-500">{title}</p>
-      <p className="text-xl font-semibold mt-1">{value}</p>
-    </div>
-  )
-}
-
-function Panel({ title, children }: any) {
-  return (
-    <div className="bg-white p-5 rounded-2xl shadow-sm border">
-      <h2 className="font-semibold mb-3">{title}</h2>
-      {children}
-    </div>
-  )
-}
-
-function Stat({ label, value }: any) {
-  return (
-    <div>
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className="text-2xl font-bold">{value}</p>
-    </div>
-  )
-}
-
-function Empty({ text }: any) {
-  return <p className="text-sm text-gray-400">{text}</p>
-}
-
-function AlertCard({ alert, resolved = false }: any) {
-  return (
-    <div className="border rounded-xl p-3 text-sm bg-gray-50">
-      <p className="font-semibold">{alert.alert_type}</p>
-      <p className="text-gray-600">{alert.message}</p>
-      <div className="text-xs text-gray-400 mt-1">
-        {alert.severity?.toUpperCase()} • {resolved ? "resolved" : alert.status}
-      </div>
-    </div>
-  )
-}
-
-/* ---------------- SELLING COMPONENTS ---------------- */
-
-function ImpactBar({ ticketsAvoided, refundsIssued, estSavings }: any) {
-  return (
-    <div className="bg-black text-white rounded-2xl p-6 flex flex-col md:flex-row md:justify-between gap-6">
-      <div>
-        <p className="text-sm text-gray-300">Support Load Reduced</p>
-        <p className="text-2xl font-bold">{ticketsAvoided} tickets avoided</p>
-      </div>
-
-      <div>
-        <p className="text-sm text-gray-300">Customer Recovery</p>
-        <p className="text-2xl font-bold">{refundsIssued} refunds handled</p>
-      </div>
-
-      <div>
-        <p className="text-sm text-gray-300">Estimated Savings</p>
-        <p className="text-2xl font-bold">${estSavings}</p>
-      </div>
-    </div>
-  )
-}
-
-function SystemStatus({ pending, failed }: any) {
-  const healthy = failed === 0
+function SeverityBadge({ severity }: { severity: string }) {
+  const styles =
+    severity === "critical"
+      ? "bg-red-100 text-red-600"
+      : severity === "high"
+      ? "bg-orange-100 text-orange-600"
+      : "bg-yellow-100 text-yellow-600"
 
   return (
-    <div className="bg-white p-4 rounded-2xl border">
-      <p className="text-xs text-gray-500">System Status</p>
-      <p className={`text-lg font-semibold mt-1 ${healthy ? "text-green-600" : "text-red-600"}`}>
-        {healthy ? "Healthy" : "Needs Attention"}
-      </p>
-      <p className="text-xs text-gray-400 mt-1">
-        {pending} pending • {failed} failed
-      </p>
-    </div>
-  )
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const styles: any = {
-    pending: "bg-yellow-100 text-yellow-700",
-    completed: "bg-green-100 text-green-700",
-    failed: "bg-red-100 text-red-700 animate-pulse",
-  }
-
-  return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[status] || "bg-gray-100 text-gray-600"}`}>
-      {status}
+    <span className={`text-xs px-2 py-0.5 rounded-full ${styles}`}>
+      {severity}
     </span>
   )
 }
 
-function formatAction(type: string) {
-  const map: any = {
-    refund: "💸 Refund",
-    discount: "🏷️ Discount",
-    reship: "📦 Reship",
-    notify_customer: "📩 Notify",
-    expedite_shipping: "🚚 Expedite",
-  }
+function Metric({ label, value }: any) {
+  return (
+    <div>
+      <div className="text-neutral-500 text-xs">{label}</div>
+      <div className="font-semibold">{value}</div>
+    </div>
+  )
+}
 
-  return map[type] || type
+/* =============================
+   HELPERS
+============================= */
+
+function formatAction(action: string) {
+  switch (action) {
+    case "refund":
+      return "Refund issued"
+    case "expedite_shipping":
+      return "Shipping upgraded"
+    case "notify_customer":
+      return "Customer notified"
+    default:
+      return action
+  }
+}
+
+function formatTime(dateString: string) {
+  const diff = Date.now() - new Date(dateString).getTime()
+  const seconds = Math.floor(diff / 1000)
+
+  if (seconds < 60) return "now"
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
+
+  return `${Math.floor(seconds / 86400)}d`
 }

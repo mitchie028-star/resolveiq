@@ -1,192 +1,178 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState } from "react"
 
-type Case = {
+type Alert = {
+  id: string
   order_id: string
-  score: number
-  refund_amount: number | null
-  message_count: number
-  severity: string
-  issue: string
-  is_frustrated: boolean
+  alert_type: string
+  message: string
+  severity: "low" | "medium" | "high"
 }
 
-export default function WorstCases() {
-  const [cases, setCases] = useState<Case[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+/* ---------------- MAIN LIST ---------------- */
 
-  const router = useRouter()
+export default function WorstCases({ alerts = [] }: { alerts?: Alert[] }) {
+  const [items, setItems] = useState(alerts)
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await fetch("/api/run-engines/worst-cases")
-
-        if (!res.ok) {
-          const text = await res.text()
-          console.error("API ERROR:", text)
-          throw new Error(text)
-        }
-
-        const data = await res.json()
-        setCases(Array.isArray(data) ? data : [])
-      } catch (err) {
-        console.error(err)
-        setError("Failed to load worst cases")
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    load()
-  }, [])
-
-  const getScoreColor = (score: number) => {
-    if (score < 60) return "text-red-600"
-    if (score < 75) return "text-yellow-600"
-    return "text-green-600"
+  const removeItem = (id: string) => {
+    setItems((prev) => prev.filter((a) => a.id !== id))
   }
 
-  const getSeverityStyle = (severity: string) => {
-    const map: Record<string, string> = {
-      high: "bg-red-100 text-red-700",
-      medium: "bg-yellow-100 text-yellow-700",
-      low: "bg-gray-100 text-gray-600",
-    }
-    return map[severity?.toLowerCase()] || map.low
-  }
-
-  const renderSignals = (c: Case) => {
-    const hasRefund = !!c.refund_amount && c.refund_amount > 0
-
+  if (!items.length) {
     return (
-      <div className="flex flex-col gap-1 text-xs">
-        {c.is_frustrated && (
-          <span className="text-red-600">⚠️ Frustrated</span>
-        )}
-
-        {c.message_count > 4 && (
-          <span className="text-yellow-600">⚠️ Many messages</span>
-        )}
-
-        {hasRefund && (
-          <span className="text-red-500">💸 Refund issued</span>
-        )}
-
-        {!c.is_frustrated && c.message_count <= 2 && !hasRefund && (
-          <span className="text-green-600">✅ Clean</span>
-        )}
+      <div className="text-sm text-gray-500 py-10 text-center">
+        ✅ No risky orders right now
       </div>
     )
   }
-
-  // -----------------------
-  // STATES
-  // -----------------------
-
-  if (loading) {
-    return (
-      <div className="bg-white p-6 rounded-2xl shadow">
-        Loading worst cases...
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="bg-white p-6 rounded-2xl shadow text-red-500">
-        {error}
-      </div>
-    )
-  }
-
-  // -----------------------
-  // UI
-  // -----------------------
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6">
-      <h2 className="text-xl font-semibold mb-4">
-        🚨 Top 10 Worst Cases
-      </h2>
+    <div className="space-y-4">
+      {items.map((alert) => (
+        <CaseCard
+          key={alert.id}
+          alert={alert}
+          onResolved={() => removeItem(alert.id)}
+        />
+      ))}
+    </div>
+  )
+}
 
-      {cases.length === 0 ? (
-        <div className="text-gray-500 text-sm">
-          No bad cases yet. System is performing well 👍
+/* ---------------- CASE CARD ---------------- */
+
+function CaseCard({
+  alert,
+  onResolved,
+}: {
+  alert: Alert
+  onResolved: () => void
+}) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+
+  const handleAction = async (type: string) => {
+    setLoading(true)
+    setError(false)
+
+    try {
+      const res = await fetch("/api/actions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          order_id: alert.order_id,
+          action_type: type,
+        }),
+      })
+
+      if (!res.ok) throw new Error("failed")
+
+      // ✅ instant UI feedback (removes card)
+      onResolved()
+    } catch (e) {
+      setError(true)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  /* ---------------- LOGIC ---------------- */
+
+  const severityStyles = {
+    low: "bg-gray-100 text-gray-600",
+    medium: "bg-yellow-100 text-yellow-700",
+    high: "bg-red-100 text-red-700",
+  }
+
+  const recommendedAction =
+    alert.severity === "high"
+      ? "reship"
+      : alert.severity === "medium"
+      ? "notify_customer"
+      : "notify_customer"
+
+  const actionLabelMap: Record<string, string> = {
+    notify_customer: "Notify customer",
+    refund: "Issue refund",
+    reship: "Reship order",
+  }
+
+  /* ---------------- UI ---------------- */
+
+  return (
+    <div className="bg-white border rounded-2xl p-5 flex items-center justify-between hover:shadow-md transition">
+
+      {/* LEFT */}
+      <div className="space-y-2 max-w-lg">
+
+        {/* HEADER */}
+        <div className="flex items-center gap-3">
+          <p className="font-semibold text-sm">
+            Order {alert.order_id}
+          </p>
+
+          <span
+            className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+              severityStyles[alert.severity]
+            }`}
+          >
+            {alert.severity.toUpperCase()}
+          </span>
         </div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="text-left text-gray-500 border-b">
-              <tr>
-                <th className="py-2">Order</th>
-                <th>Score</th>
-                <th>Refund</th>
-                <th>Messages</th>
-                <th>Severity</th>
-                <th>Issue</th>
-                <th>Signals</th>
-              </tr>
-            </thead>
 
-            <tbody>
-              {cases.map((c) => {
-                const hasRefund =
-                  !!c.refund_amount && c.refund_amount > 0
+        {/* MESSAGE */}
+        <p className="text-sm text-gray-600">
+          {alert.message}
+        </p>
 
-                return (
-                  <tr
-                    key={c.order_id}
-                    onClick={() =>
-                      router.push(`/cases/${c.order_id}`)
-                    }
-                    className="border-b hover:bg-gray-50 cursor-pointer transition"
-                  >
-                    <td className="py-2 font-mono text-xs">
-                      {c.order_id.slice(0, 8)}...
-                    </td>
+        {/* AI RECOMMENDATION */}
+        <p className="text-xs text-gray-500">
+          🤖 Recommended:{" "}
+          <span className="font-medium text-gray-800">
+            {actionLabelMap[recommendedAction]}
+          </span>
+        </p>
 
-                    <td
-                      className={`font-semibold ${getScoreColor(
-                        c.score
-                      )}`}
-                    >
-                      {c.score}
-                    </td>
+        {/* ERROR */}
+        {error && (
+          <p className="text-xs text-red-500">
+            Action failed. Please retry.
+          </p>
+        )}
+      </div>
 
-                    <td className="text-red-600">
-                      {hasRefund
-                        ? `₱${c.refund_amount}`
-                        : "-"}
-                    </td>
+      {/* RIGHT */}
+      <div className="flex items-center gap-2">
 
-                    <td>{c.message_count}</td>
+        {/* Secondary */}
+        <button
+          onClick={() => handleAction("notify_customer")}
+          disabled={loading}
+          className="text-sm px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200"
+        >
+          Notify
+        </button>
 
-                    <td>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${getSeverityStyle(
-                          c.severity
-                        )}`}
-                      >
-                        {c.severity}
-                      </span>
-                    </td>
+        <button
+          onClick={() => handleAction("refund")}
+          disabled={loading}
+          className="text-sm px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200"
+        >
+          Refund
+        </button>
 
-                    <td className="text-gray-700">
-                      {c.issue}
-                    </td>
-
-                    <td>{renderSignals(c)}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+        {/* PRIMARY CTA */}
+        <button
+          onClick={() => handleAction(recommendedAction)}
+          disabled={loading}
+          className="text-sm px-4 py-2 rounded-lg bg-black text-white font-medium"
+        >
+          {loading ? "Processing..." : "Fix now →"}
+        </button>
+      </div>
     </div>
   )
 }

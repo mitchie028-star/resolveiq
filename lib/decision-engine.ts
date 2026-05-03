@@ -1,232 +1,314 @@
 import { createServerClient } from "./supabase-server"
+import { getMerchantConfig } from "./merchant-config"
 
 // -------------------------
-// 🧠 Types
+// 🧠 TYPES
 // -------------------------
 export type Alert = {
   id: string
   order_id: string
+  merchant_id: string
   alert_type: string
   severity: "low" | "medium" | "high" | "critical"
   risk_score: number
-  confidence?: number
-  status?: string
-  created_at?: string
+  status?: "active" | "resolved"
+
+  workflow_state?: "new" | "notified" | "expedited" | "recovered"
+  last_action_at?: string | null
+  workflow_step?: number
 }
 
+export type ActionType =
+  | "notify_customer"
+  | "expedite_shipping"
+  | "refund"
+
 export type ActionDecision = {
-  type:
-    | "notify_customer"
-    | "expedite_shipping"
-    | "refund"
-    | "monitor"
+  type: ActionType
   priority: "low" | "medium" | "high"
   reason: string
   score: number
 }
 
 // -------------------------
-// 🎯 MAIN DECISION FUNCTION
+// 🧮 TIME
 // -------------------------
-export function decideAction(alert: Alert): ActionDecision {
-  const decisions: ActionDecision[] = [
-    evaluateRefund(alert),
-    evaluateExpedite(alert),
-    evaluateNotify(alert),
-    evaluateMonitor(alert),
-  ]
+function getHoursSince(date?: string | null) {
+  if (!date) return 999
 
-  // Sort by score DESC, then priority
-  const best = decisions.sort((a, b) => {
-    if (b.score === a.score) {
-      return priorityWeight(b.priority) - priorityWeight(a.priority)
-    }
-    return b.score - a.score
-  })[0]
-
-  return best
+  return (
+    (Date.now() - new Date(date).getTime()) /
+    (1000 * 60 * 60)
+  )
 }
 
 // -------------------------
-// ⚖️ Priority Weighting
+// 🔁 STATE MACHINE
 // -------------------------
-function priorityWeight(p: string) {
-  if (p === "high") return 3
-  if (p === "medium") return 2
-  return 1
-}
-
-// -------------------------
-// 🧮 Decision Evaluators
-// -------------------------
-function evaluateRefund(alert: Alert): ActionDecision {
-  let score = 0
-  let reason = "No refund needed"
-
-  if (alert.alert_type === "delay") {
-    if (alert.severity === "critical") {
-      score += 90
-      reason = "Critical delay → refund to prevent churn"
-    }
-
-    if (alert.risk_score >= 90) {
-      score += 10
-    }
+function getNextState(actionType: ActionType) {
+  switch (actionType) {
+    case "notify_customer":
+      return "notified"
+    case "expedite_shipping":
+      return "expedited"
+    case "refund":
+      return "recovered"
+    default:
+      return "new"
   }
+}
 
+// -------------------------
+// 🧠 SAFE CONFIG
+// -------------------------
+function getSafeAutomationConfig(config: any) {
   return {
-    type: "refund",
-    priority: "high",
-    score,
-    reason,
-  }
-}
-
-function evaluateExpedite(alert: Alert): ActionDecision {
-  let score = 0
-  let reason = "No expedite needed"
-
-  if (alert.alert_type === "delay") {
-    if (alert.severity === "high") {
-      score += 80
-      reason = "High delay → expedite shipping"
-    }
-
-    if (alert.risk_score >= 70) {
-      score += 10
-    }
-  }
-
-  return {
-    type: "expedite_shipping",
-    priority: "high",
-    score,
-    reason,
-  }
-}
-
-function evaluateNotify(alert: Alert): ActionDecision {
-  let score = 0
-  let reason = "No notification needed"
-
-  if (alert.alert_type === "delay") {
-    if (alert.severity === "medium") {
-      score += 70
-      reason = "Medium delay → notify customer"
-    }
-
-    if (alert.severity === "high") {
-      score += 40 // fallback
-      reason = "High delay fallback → notify"
-    }
-  }
-
-  return {
-    type: "notify_customer",
-    priority: "medium",
-    score,
-    reason,
-  }
-}
-
-function evaluateMonitor(alert: Alert): ActionDecision {
-  return {
-    type: "monitor",
-    priority: "low",
-    score: 10,
-    reason: "No strong signal → monitor only",
+    notify_customer:
+      config?.automation_config?.notify_customer ?? true,
+    expedite_after_hours:
+      config?.automation_config?.expedite_after_hours ?? 6,
+    refund_after_hours:
+      config?.automation_config?.refund_after_hours ?? 24,
+    auto_refund:
+      config?.automation_config?.auto_refund ?? true,
   }
 }
 
 // -------------------------
-// 🔒 Prevent duplicate actions
+// 🎯 DECISION ENGINE
+// -------------------------
+function decideActionsStateful(
+  alert: Alert,
+  config: any
+): ActionDecision[] {
+  const state = alert.workflow_state || "new"
+  const hoursSinceLast = getHoursSince(alert.last_action_at)
+  const automation = getSafeAutomationConfig(config)
+
+  // 🚫 HARD STOP
+  if (state === "recovered") return []
+
+  if (state === "new" && automation.notify_customer) {
+    return [{
+      type: "notify_customer",
+      priority: "high",
+      score: 80,
+      reason: "Initial delay → notify customer",
+    }]
+  }
+
+  if (
+    state === "notified" &&
+    hoursSinceLast >= automation.expedite_after_hours
+  ) {
+    return [{
+      type: "expedite_shipping",
+      priority: "high",
+      score: 85,
+      reason: `No resolution after ${automation.expedite_after_hours}h → expedite`,
+    }]
+  }
+
+  if (
+    state === "expedited" &&
+    hoursSinceLast >= automation.refund_after_hours &&
+    automation.auto_refund
+  ) {
+    return [{
+      type: "refund",
+      priority: "high",
+      score: 95,
+      reason: `Still unresolved after ${automation.refund_after_hours}h → refund`,
+    }]
+  }
+
+  return []
+}
+
+// -------------------------
+// 💰 PAYLOAD
+// -------------------------
+function buildActionPayload(alert: Alert, decision: ActionDecision) {
+  switch (decision.type) {
+    case "refund":
+      return {
+        amount: estimateRefund(alert),
+        reason: "delay_compensation",
+      }
+    case "expedite_shipping":
+      return { priority: "high" }
+    case "notify_customer":
+      return { template: "delay_apology" }
+    default:
+      return {}
+  }
+}
+
+function estimateRefund(alert: Alert) {
+  if (alert.severity === "critical") return 50
+  if (alert.severity === "high") return 25
+  return 10
+}
+
+// -------------------------
+// 🔒 IDEMPOTENCY
 // -------------------------
 async function actionExists(
   supabase: any,
   alert: Alert,
-  type: string
+  type: ActionType
 ) {
   const { data } = await supabase
     .from("actions")
     .select("id")
     .eq("alert_id", alert.id)
     .eq("action_type", type)
-    .maybeSingle()
+    .in("status", ["pending", "completed"])
+    .limit(1)
 
-  return !!data
+  return (data?.length ?? 0) > 0
 }
 
 // -------------------------
-// 🧾 Persist Action
+// 🧾 CREATE ACTION
 // -------------------------
 async function createAction(
   supabase: any,
   alert: Alert,
   decision: ActionDecision
 ) {
-  // Skip monitor
-  if (decision.type === "monitor") return
+  if (alert.status !== "active") return
+  if (alert.workflow_state === "recovered") return
+  if (decision.score < 50) return
 
-  const exists = await actionExists(
-    supabase,
-    alert,
-    decision.type
-  )
-
+  const exists = await actionExists(supabase, alert, decision.type)
   if (exists) {
-    console.log("⚠️ Action already exists:", decision.type)
+    console.log("⚠️ Duplicate prevented:", decision.type)
     return
   }
 
-  const { error } = await supabase.from("actions").insert({
-    alert_id: alert.id,
-    order_id: alert.order_id,
-    action_type: decision.type,
-    status: "pending",
-  })
+  const payload = buildActionPayload(alert, decision)
+  const isFinal = decision.type === "refund"
 
-  if (error) {
-    console.error("❌ Action insert failed:", {
-      message: error.message,
-      code: error.code,
+  const { error: insertError } = await supabase
+    .from("actions")
+    .insert({
+      alert_id: alert.id,
+      order_id: alert.order_id,
+      merchant_id: alert.merchant_id,
+      action_type: decision.type,
+      status: isFinal ? "completed" : "pending",
+      executed_at: isFinal ? new Date().toISOString() : null,
+      priority: decision.priority,
+      payload,
+      metadata: {
+        reason: decision.reason,
+        score: decision.score,
+      },
     })
-    return
+
+  if (insertError) throw insertError
+
+  const nextState = getNextState(decision.type)
+
+  const updatePayload: any = {
+    workflow_state: nextState,
+    last_action_at: new Date().toISOString(),
+    workflow_step: (alert.workflow_step || 0) + 1,
   }
 
-  console.log(
-    `⚡ Action created: ${decision.type} → ${alert.order_id}`
-  )
+  if (isFinal) {
+    updatePayload.status = "resolved"
+    updatePayload.resolved_at = new Date().toISOString()
+  }
+
+  const { error: updateError } = await supabase
+    .from("alerts")
+    .update(updatePayload)
+    .eq("id", alert.id)
+
+  if (updateError) throw updateError
+
+  console.log(`⚡ ${decision.type} → ${alert.order_id}`)
 }
 
 // -------------------------
-// 🚀 MAIN ENGINE
+// 🛡️ CONSISTENCY
 // -------------------------
-export async function runDecisionEngine() {
+async function enforceConsistency(supabase: any) {
+  await supabase
+    .from("alerts")
+    .update({
+      status: "resolved",
+      resolved_at: new Date().toISOString(),
+    })
+    .eq("workflow_state", "recovered")
+    .neq("status", "resolved")
+}
+
+// -------------------------
+// 🚀 MAIN ENGINE (RETURNS STATUS)
+// -------------------------
+export async function runDecisionEngine(): Promise<{
+  success: boolean
+  processed: number
+  errors: number
+}> {
   const supabase = createServerClient()
 
-  // 1. Fetch ACTIVE alerts only
-  const { data: alerts, error } = await supabase
-    .from("alerts")
-    .select("*")
-    .eq("status", "active")
+  console.log("⚡ Decision Engine started")
 
-  if (error) {
-    console.error("❌ Failed to fetch alerts:", error)
-    return
-  }
+  let processed = 0
+  let errors = 0
 
-  for (const alert of alerts || []) {
-    // 2. Decide
-    const decision = decideAction(alert)
+  try {
+    await enforceConsistency(supabase)
 
-    console.log("🧠 Decision:", {
-      order: alert.order_id,
-      action: decision.type,
-      score: decision.score,
-      reason: decision.reason,
-    })
+    const { data: alerts, error } = await supabase
+      .from("alerts")
+      .select("*")
+      .eq("status", "active")
 
-    // 3. Persist action
-    await createAction(supabase, alert, decision)
+    if (error) throw error
+
+    if (!alerts?.length) {
+      console.log("⚠️ No active alerts")
+      return { success: true, processed: 0, errors: 0 }
+    }
+
+    for (const alert of alerts) {
+      if (!alert || alert.severity === "low") continue
+      if (alert.workflow_state === "recovered") continue
+
+      try {
+        const config = await getMerchantConfig(alert.merchant_id)
+        const decisions = decideActionsStateful(alert, config)
+
+        for (const decision of decisions) {
+          await createAction(supabase, alert, decision)
+          processed++
+        }
+      } catch (err) {
+        errors++
+        console.error("❌ Alert processing failed:", alert.id, err)
+      }
+    }
+
+    console.log("✅ Decision Engine finished")
+
+    return {
+      success: errors === 0,
+      processed,
+      errors,
+    }
+
+  } catch (err) {
+    console.error("❌ Decision Engine crashed:", err)
+
+    return {
+      success: false,
+      processed,
+      errors: errors + 1,
+    }
   }
 }

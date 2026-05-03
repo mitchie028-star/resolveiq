@@ -1,33 +1,27 @@
+import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-if (!supabaseUrl || !serviceKey) {
-  throw new Error("Missing Supabase environment variables")
-}
-
-const supabase = createClient(supabaseUrl, serviceKey)
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function GET() {
   try {
-    const { data, error } = await supabase.rpc("get_worst_cases")
+    const { data, error } = await supabase
+      .from("qa_results")
+      .select("*")
+      .order("score", { ascending: true })
+      .limit(10)
 
-    if (error) {
-      console.error("❌ Supabase RPC Error:", error)
+    if (error) throw error
 
-      return Response.json(
-        { error: error.message || "Failed to fetch worst cases" },
-        { status: 500 }
-      )
-    }
+    return NextResponse.json(data || [])
+  } catch (err) {
+    console.error("WORST CASES API ERROR:", err)
 
-    return Response.json(data ?? [])
-  } catch (err: any) {
-    console.error("🔥 Unexpected API Error:", err)
-
-    return Response.json(
-      { error: "Unexpected server error" },
+    return NextResponse.json(
+      { error: "Failed to load worst cases" },
       { status: 500 }
     )
   }

@@ -6,57 +6,67 @@ import { addWorkflowJob } from "@/lib/queue/producer"
 function isAuthorized(req: Request) {
   const authHeader = req.headers.get("authorization")
 
-  // If no secret set, allow (useful for local dev)
+  // Allow local/dev runs if no secret configured
   if (!process.env.CRON_SECRET) return true
 
   return authHeader === `Bearer ${process.env.CRON_SECRET}`
 }
 
 // -------------------------
-// 🚀 CRON ENTRYPOINT (JOB DISPATCHER ONLY)
+// 🧠 SAFE QUEUE HELPER
+// -------------------------
+async function safeAddJob(type: string) {
+  try {
+    await addWorkflowJob({ type })
+    console.log(`📦 Job queued: ${type}`)
+  } catch (err: any) {
+    console.error(`❌ Failed to queue ${type}:`, err?.message || err)
+    throw err
+  }
+}
+
+// -------------------------
+// 🚀 CRON ENTRYPOINT (DISPATCHER ONLY)
 // -------------------------
 export async function GET(req: Request) {
   const start = Date.now()
 
-  console.log("⚡ Cron dispatcher started")
+  console.log("⚡ Cron dispatcher triggered")
 
   try {
-    // 🔐 Security check
+    // 🔐 AUTH CHECK
     if (!isAuthorized(req)) {
       console.warn("🚫 Unauthorized cron request blocked")
       return new Response("Unauthorized", { status: 401 })
     }
 
-    // 📦 Enqueue Alert Engine job
-    await addWorkflowJob({
-      type: "RUN_ALERT_ENGINE",
-    })
+    // ⚙️ STEP 1: Alert Engine
+    await safeAddJob("RUN_ALERT_ENGINE")
 
-    // 🧠 Enqueue Decision Engine job
-    await addWorkflowJob({
-      type: "RUN_DECISION_ENGINE",
-    })
+    // 🧠 STEP 2: Decision Engine
+    await safeAddJob("RUN_DECISION_ENGINE")
 
-    // ⚙️ Enqueue Action Executor job
-    await addWorkflowJob({
-      type: "RUN_ACTION_EXECUTOR",
-    })
+    // 🚀 STEP 3: Action Executor
+    await safeAddJob("RUN_ACTION_EXECUTOR")
 
     const duration = Date.now() - start
 
-    console.log(`✅ Cron jobs enqueued successfully (${duration}ms)`)
+    console.log(`✅ Cron dispatch complete in ${duration}ms`)
 
     return Response.json({
       success: true,
       duration,
-      message: "Workflow jobs queued successfully",
+      message: "Workflow jobs successfully queued",
     })
   } catch (err: any) {
-    console.error("❌ Cron dispatcher failed:", err)
+    const duration = Date.now() - start
+
+    console.error("💥 Cron dispatcher failed:", err)
 
     return Response.json(
       {
         success: false,
+        duration,
         error: err?.message || "cron_dispatch_failed",
       },
       { status: 500 }

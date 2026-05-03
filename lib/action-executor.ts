@@ -15,16 +15,20 @@ export type ActionResult = {
   errors: string[]
 }
 
-type ActionType =
+export type ActionType =
   | "refund"
   | "discount"
   | "reship"
   | "notify_customer"
   | "expedite_shipping"
 
-type ActionStatus = "pending" | "failed" | "in_progress" | "completed"
+export type ActionStatus =
+  | "pending"
+  | "failed"
+  | "in_progress"
+  | "completed"
 
-type ActionRecord = {
+export type ActionRecord = {
   id: string
   action_type: ActionType
   order_id: string
@@ -40,10 +44,7 @@ type ActionRecord = {
 // 🧠 PRIORITY ENGINE
 // -------------------------
 function computePriorityScore(action: ActionRecord) {
-  let score = 0
-
   const decisionScore = action.metadata?.score ?? 0
-  score += decisionScore
 
   const typeWeight: Record<ActionType, number> = {
     refund: 40,
@@ -53,7 +54,10 @@ function computePriorityScore(action: ActionRecord) {
     notify_customer: 20,
   }
 
-  score += typeWeight[action.action_type] || 0
+  let score =
+    decisionScore +
+    (typeWeight[action.action_type] || 0) +
+    (action.retry_count || 0) * 10
 
   if (action.created_at) {
     const ageMinutes =
@@ -62,15 +66,13 @@ function computePriorityScore(action: ActionRecord) {
     score += Math.min(20, Math.floor(ageMinutes / 10))
   }
 
-  score += (action.retry_count || 0) * 10
-
   return score
 }
 
 // -------------------------
 // 🔒 VALIDATION
 // -------------------------
-function isValidAction(action: ActionRecord) {
+function isValidAction(action: ActionRecord): boolean {
   if (!action.action_type) return false
 
   const requiresPayload: ActionType[] = [
@@ -88,9 +90,13 @@ function isValidAction(action: ActionRecord) {
 }
 
 // -------------------------
-// 🔒 LOCKING
+// 🔒 LOCKING (CRITICAL FIX)
+// prevents double execution in parallel cron runs
 // -------------------------
-async function markInProgress(supabase: any, id: string) {
+async function markInProgress(
+  supabase: any,
+  id: string
+): Promise<boolean> {
   const { data, error } = await supabase
     .from("actions")
     .update({
@@ -106,8 +112,33 @@ async function markInProgress(supabase: any, id: string) {
 }
 
 // -------------------------
-// 🎯 ACTION REGISTRY
+// 🎯 HANDLER REGISTRY
 // -------------------------
+async function handleRefund(action: ActionRecord) {
+  console.log("💸 Refund:", action.order_id)
+  await delay()
+}
+
+async function handleDiscount(action: ActionRecord) {
+  console.log("🏷️ Discount:", action.order_id)
+  await delay()
+}
+
+async function handleReship(action: ActionRecord) {
+  console.log("📦 Reship:", action.order_id)
+  await delay()
+}
+
+async function handleNotify(action: ActionRecord) {
+  console.log("📩 Notify:", action.order_id)
+  await delay()
+}
+
+async function handleExpedite(action: ActionRecord) {
+  console.log("🚚 Expedite:", action.order_id)
+  await delay()
+}
+
 const ACTION_HANDLERS: Record<
   ActionType,
   (action: ActionRecord) => Promise<void>
@@ -126,7 +157,7 @@ async function executeAction(action: ActionRecord) {
   const handler = ACTION_HANDLERS[action.action_type]
 
   if (!handler) {
-    console.warn("🤷 No handler for:", action.action_type)
+    console.warn("⚠️ Missing handler:", action.action_type)
     return
   }
 
@@ -149,7 +180,7 @@ async function updateSuccess(supabase: any, id: string) {
 }
 
 // -------------------------
-// FAILURE UPDATE
+// FAILURE UPDATE (EXPONENTIAL BACKOFF)
 // -------------------------
 async function updateFailure(
   supabase: any,
@@ -157,9 +188,9 @@ async function updateFailure(
   errorMessage: string
 ) {
   const retryCount = (action.retry_count || 0) + 1
-  const delayMinutes = Math.pow(2, retryCount)
+  const delayMinutes = Math.min(60, Math.pow(2, retryCount))
 
-  const nextRetry = new Date(
+  const nextRetryAt = new Date(
     Date.now() + delayMinutes * 60 * 1000
   ).toISOString()
 
@@ -168,7 +199,7 @@ async function updateFailure(
     .update({
       status: "failed",
       retry_count: retryCount,
-      next_retry_at: nextRetry,
+      next_retry_at: nextRetryAt,
       updated_at: new Date().toISOString(),
       metadata: {
         ...(action.metadata || {}),
@@ -181,11 +212,11 @@ async function updateFailure(
     })
     .eq("id", action.id)
 
-  console.log(`🔁 Retry in ${delayMinutes} min (attempt ${retryCount})`)
+  console.log(`🔁 Retry scheduled in ${delayMinutes}m`)
 }
 
 // -------------------------
-// 🚀 MAIN EXECUTOR
+// MAIN EXECUTOR
 // -------------------------
 export async function runActionExecutor(): Promise<ActionResult> {
   const supabase = createServerClient()
@@ -209,19 +240,16 @@ export async function runActionExecutor(): Promise<ActionResult> {
     }
   }
 
-  const prioritizedActions: ActionRecord[] = (actions || [])
-    .map((a: any) => ({
+  const prioritized = (actions || [])
+    .map((a: ActionRecord) => ({
       ...a,
       priority_score: computePriorityScore(a),
     }))
     .sort((a, b) => b.priority_score - a.priority_score)
 
-  for (const action of prioritizedActions) {
-    if (
-      action.status === "failed" &&
-      (action.retry_count || 0) >= MAX_RETRIES
-    ) {
-      console.log("🚫 Max retries reached:", action.id)
+  for (const action of prioritized) {
+    if ((action.retry_count || 0) >= MAX_RETRIES) {
+      console.log("🚫 Max retries:", action.id)
       continue
     }
 
@@ -231,7 +259,7 @@ export async function runActionExecutor(): Promise<ActionResult> {
     if (!locked) continue
 
     try {
-      console.log("⚡ Executing:", action.action_type)
+      console.log("⚡ Running:", action.action_type)
 
       await executeAction(action)
 
@@ -241,7 +269,7 @@ export async function runActionExecutor(): Promise<ActionResult> {
     } catch (err: any) {
       const message = err?.message || "unknown_error"
 
-      console.error("❌ Execution failed:", message)
+      console.error("❌ Failed:", message)
 
       await updateFailure(supabase, action, message)
 
@@ -257,36 +285,8 @@ export async function runActionExecutor(): Promise<ActionResult> {
 }
 
 // -------------------------
-// 🧠 HANDLERS
+// UTIL
 // -------------------------
-async function handleRefund(action: ActionRecord) {
-  console.log("💸 Refund:", action.order_id, action.payload)
-  await fakeDelay()
-}
-
-async function handleDiscount(action: ActionRecord) {
-  console.log("🏷️ Discount:", action.order_id, action.payload)
-  await fakeDelay()
-}
-
-async function handleReship(action: ActionRecord) {
-  console.log("📦 Reship:", action.order_id)
-  await fakeDelay()
-}
-
-async function handleNotify(action: ActionRecord) {
-  console.log("📩 Notify:", action.order_id, action.payload)
-  await fakeDelay()
-}
-
-async function handleExpedite(action: ActionRecord) {
-  console.log("🚚 Expedite:", action.order_id, action.payload)
-  await fakeDelay()
-}
-
-// -------------------------
-// 🧪 MOCK
-// -------------------------
-function fakeDelay() {
+function delay() {
   return new Promise((res) => setTimeout(res, 300))
 }

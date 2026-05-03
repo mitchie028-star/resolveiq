@@ -2,11 +2,11 @@ import { runAlertEngine } from "@/lib/alert-engine"
 import { runDecisionEngine } from "@/lib/decision-engine"
 
 // -------------------------
-// 🧠 STAGE RUNNER (GENERIC SAFE)
+// 🧠 STAGE RUNNER (FORCE SAFE)
 // -------------------------
-async function runStage<T>(
+async function runStage(
   label: string,
-  fn: () => Promise<T>
+  fn: () => Promise<any> // ✅ FIX: allow ANY return type
 ) {
   const start = Date.now()
 
@@ -45,9 +45,7 @@ async function runStage<T>(
 async function runExecutor() {
   const baseUrl =
     process.env.BASE_URL ||
-    process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000"
+    "https://resolveiq.vercel.app"
 
   const url = `${baseUrl}/api/actions/execute`
 
@@ -77,9 +75,7 @@ async function runExecutor() {
     let parsed: any = raw
     try {
       parsed = JSON.parse(raw)
-    } catch {
-      // keep raw if not JSON
-    }
+    } catch {}
 
     if (!res.ok) {
       console.error("❌ Executor raw response:", raw)
@@ -104,7 +100,6 @@ async function runExecutor() {
 // 🚀 CRON ENTRYPOINT
 // -------------------------
 export async function GET(req: Request) {
-  // 🔒 AUTH
   const authHeader = req.headers.get("authorization")
 
   if (process.env.CRON_SECRET) {
@@ -117,9 +112,7 @@ export async function GET(req: Request) {
   console.log("⚡ Cron started")
 
   try {
-    // -------------------------
-    // 🧠 ALERT ENGINE
-    // -------------------------
+    // 🧠 ALERT
     const alert = await runStage("Alert Engine", runAlertEngine)
 
     if (!alert.success) {
@@ -130,9 +123,7 @@ export async function GET(req: Request) {
       })
     }
 
-    // -------------------------
-    // 🧠 DECISION ENGINE
-    // -------------------------
+    // 🧠 DECISION
     const decision = await runStage("Decision Engine", runDecisionEngine)
 
     if (!decision.success) {
@@ -143,10 +134,8 @@ export async function GET(req: Request) {
       })
     }
 
-    // -------------------------
-    // ⚙️ ACTION EXECUTOR
-    // -------------------------
-    const executor = await runStage("Action Executor", runExecutor)
+    // ⚙️ EXECUTOR
+    const executor = await runStage("Executor", runExecutor)
 
     const totalDuration = Date.now() - start
 

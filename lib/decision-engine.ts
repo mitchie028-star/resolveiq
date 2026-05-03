@@ -30,16 +30,19 @@ export type ActionDecision = {
   score: number
 }
 
+export type DecisionEngineResult = {
+  success: boolean
+  processed: number
+  errors: number
+}
+
 // -------------------------
-// 🧮 TIME
+// 🧮 TIME HELPERS
 // -------------------------
 function getHoursSince(date?: string | null) {
   if (!date) return 999
 
-  return (
-    (Date.now() - new Date(date).getTime()) /
-    (1000 * 60 * 60)
-  )
+  return (Date.now() - new Date(date).getTime()) / (1000 * 60 * 60)
 }
 
 // -------------------------
@@ -63,19 +66,15 @@ function getNextState(actionType: ActionType) {
 // -------------------------
 function getSafeAutomationConfig(config: any) {
   return {
-    notify_customer:
-      config?.automation_config?.notify_customer ?? true,
-    expedite_after_hours:
-      config?.automation_config?.expedite_after_hours ?? 6,
-    refund_after_hours:
-      config?.automation_config?.refund_after_hours ?? 24,
-    auto_refund:
-      config?.automation_config?.auto_refund ?? true,
+    notify_customer: config?.automation_config?.notify_customer ?? true,
+    expedite_after_hours: config?.automation_config?.expedite_after_hours ?? 6,
+    refund_after_hours: config?.automation_config?.refund_after_hours ?? 24,
+    auto_refund: config?.automation_config?.auto_refund ?? true,
   }
 }
 
 // -------------------------
-// 🎯 DECISION ENGINE
+// 🎯 DECISION LOGIC
 // -------------------------
 function decideActionsStateful(
   alert: Alert,
@@ -85,7 +84,6 @@ function decideActionsStateful(
   const hoursSinceLast = getHoursSince(alert.last_action_at)
   const automation = getSafeAutomationConfig(config)
 
-  // 🚫 HARD STOP
   if (state === "recovered") return []
 
   if (state === "new" && automation.notify_customer) {
@@ -151,14 +149,14 @@ function estimateRefund(alert: Alert) {
 }
 
 // -------------------------
-// 🔒 IDEMPOTENCY
+// 🔒 IDEMPOTENCY CHECK
 // -------------------------
 async function actionExists(
   supabase: any,
   alert: Alert,
   type: ActionType
 ) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("actions")
     .select("id")
     .eq("alert_id", alert.id)
@@ -166,6 +164,7 @@ async function actionExists(
     .in("status", ["pending", "completed"])
     .limit(1)
 
+  if (error) return false
   return (data?.length ?? 0) > 0
 }
 
@@ -182,30 +181,25 @@ async function createAction(
   if (decision.score < 50) return
 
   const exists = await actionExists(supabase, alert, decision.type)
-  if (exists) {
-    console.log("⚠️ Duplicate prevented:", decision.type)
-    return
-  }
+  if (exists) return
 
   const payload = buildActionPayload(alert, decision)
   const isFinal = decision.type === "refund"
 
-  const { error: insertError } = await supabase
-    .from("actions")
-    .insert({
-      alert_id: alert.id,
-      order_id: alert.order_id,
-      merchant_id: alert.merchant_id,
-      action_type: decision.type,
-      status: isFinal ? "completed" : "pending",
-      executed_at: isFinal ? new Date().toISOString() : null,
-      priority: decision.priority,
-      payload,
-      metadata: {
-        reason: decision.reason,
-        score: decision.score,
-      },
-    })
+  const { error: insertError } = await supabase.from("actions").insert({
+    alert_id: alert.id,
+    order_id: alert.order_id,
+    merchant_id: alert.merchant_id,
+    action_type: decision.type,
+    status: isFinal ? "completed" : "pending",
+    executed_at: isFinal ? new Date().toISOString() : null,
+    priority: decision.priority,
+    payload,
+    metadata: {
+      reason: decision.reason,
+      score: decision.score,
+    },
+  })
 
   if (insertError) throw insertError
 
@@ -228,8 +222,6 @@ async function createAction(
     .eq("id", alert.id)
 
   if (updateError) throw updateError
-
-  console.log(`⚡ ${decision.type} → ${alert.order_id}`)
 }
 
 // -------------------------
@@ -247,16 +239,10 @@ async function enforceConsistency(supabase: any) {
 }
 
 // -------------------------
-// 🚀 MAIN ENGINE (RETURNS STATUS)
+// 🚀 MAIN ENGINE
 // -------------------------
-export async function runDecisionEngine(): Promise<{
-  success: boolean
-  processed: number
-  errors: number
-}> {
+export async function runDecisionEngine(): Promise<DecisionEngineResult> {
   const supabase = createServerClient()
-
-  console.log("⚡ Decision Engine started")
 
   let processed = 0
   let errors = 0
@@ -272,8 +258,11 @@ export async function runDecisionEngine(): Promise<{
     if (error) throw error
 
     if (!alerts?.length) {
-      console.log("⚠️ No active alerts")
-      return { success: true, processed: 0, errors: 0 }
+      return {
+        success: true,
+        processed: 0,
+        errors: 0,
+      }
     }
 
     for (const alert of alerts) {
@@ -282,6 +271,7 @@ export async function runDecisionEngine(): Promise<{
 
       try {
         const config = await getMerchantConfig(alert.merchant_id)
+
         const decisions = decideActionsStateful(alert, config)
 
         for (const decision of decisions) {
@@ -290,18 +280,15 @@ export async function runDecisionEngine(): Promise<{
         }
       } catch (err) {
         errors++
-        console.error("❌ Alert processing failed:", alert.id, err)
+        console.error("❌ Alert failed:", alert.id, err)
       }
     }
-
-    console.log("✅ Decision Engine finished")
 
     return {
       success: errors === 0,
       processed,
       errors,
     }
-
   } catch (err) {
     console.error("❌ Decision Engine crashed:", err)
 

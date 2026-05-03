@@ -2,12 +2,20 @@ import { runAlertEngine } from "@/lib/alert-engine"
 import { runDecisionEngine } from "@/lib/decision-engine"
 
 // -------------------------
-// 🧠 STAGE RUNNER (FORCE SAFE)
+// 🧠 STAGE RUNNER (GENERIC + SAFE)
 // -------------------------
-async function runStage(
+async function runStage<T>(
   label: string,
-  fn: () => Promise<any> // ✅ FIX: allow ANY return type
-) {
+  fn: () => Promise<T>
+): Promise<{
+  success: boolean
+  duration: number
+  result?: T
+  error?: {
+    message: string
+    stack?: string | null
+  }
+}> {
   const start = Date.now()
 
   try {
@@ -43,19 +51,13 @@ async function runStage(
 // ⚙️ EXECUTOR CALL
 // -------------------------
 async function runExecutor() {
-  const baseUrl =
-    process.env.BASE_URL ||
-    "https://resolveiq.vercel.app"
-
-  const url = `${baseUrl}/api/actions/execute`
-
-  console.log("⚙️ Calling executor:", url)
+  console.log("⚙️ Calling executor: /api/actions/execute")
 
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 10000)
 
   try {
-    const res = await fetch(url, {
+    const res = await fetch("/api/actions/execute", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,10 +74,12 @@ async function runExecutor() {
 
     const raw = await res.text()
 
-    let parsed: any = raw
+    let parsed: unknown = raw
     try {
       parsed = JSON.parse(raw)
-    } catch {}
+    } catch {
+      // leave as raw string
+    }
 
     if (!res.ok) {
       console.error("❌ Executor raw response:", raw)
@@ -102,6 +106,7 @@ async function runExecutor() {
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization")
 
+  // 🔐 Protect cron endpoint
   if (process.env.CRON_SECRET) {
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       return new Response("Unauthorized", { status: 401 })
@@ -113,7 +118,9 @@ export async function GET(req: Request) {
 
   try {
     // 🧠 ALERT
-    const alert = await runStage("Alert Engine", runAlertEngine)
+    const alert = await runStage("Alert Engine", async () => {
+      return await runAlertEngine()
+    })
 
     if (!alert.success) {
       return Response.json({
@@ -124,7 +131,9 @@ export async function GET(req: Request) {
     }
 
     // 🧠 DECISION
-    const decision = await runStage("Decision Engine", runDecisionEngine)
+    const decision = await runStage("Decision Engine", async () => {
+      return await runDecisionEngine()
+    })
 
     if (!decision.success) {
       return Response.json({
@@ -135,10 +144,11 @@ export async function GET(req: Request) {
     }
 
     // ⚙️ EXECUTOR
-    const executor = await runStage("Executor", runExecutor)
+    const executor = await runStage("Executor", async () => {
+      return await runExecutor()
+    })
 
     const totalDuration = Date.now() - start
-
     console.log(`✅ Cron finished in ${totalDuration}ms`)
 
     return Response.json({

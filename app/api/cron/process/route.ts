@@ -1,172 +1,63 @@
-import { runAlertEngine } from "@/lib/alert-engine"
-import { runDecisionEngine } from "@/lib/decision-engine"
+import { addWorkflowJob } from "@/lib/queue/producer"
 
 // -------------------------
-// 🧠 STAGE RUNNER (GENERIC + SAFE)
+// 🔐 AUTH GUARD
 // -------------------------
-async function runStage<T>(
-  label: string,
-  fn: () => Promise<T>
-): Promise<{
-  success: boolean
-  duration: number
-  result?: T
-  error?: {
-    message: string
-    stack?: string | null
-  }
-}> {
-  const start = Date.now()
-
-  try {
-    console.log(`▶️ ${label} started`)
-
-    const result = await fn()
-
-    const duration = Date.now() - start
-    console.log(`✅ ${label} finished (${duration}ms)`)
-
-    return {
-      success: true,
-      duration,
-      result,
-    }
-  } catch (err: any) {
-    const duration = Date.now() - start
-
-    console.error(`❌ ${label} failed (${duration}ms):`, err)
-
-    return {
-      success: false,
-      duration,
-      error: {
-        message: err?.message || "unknown_error",
-        stack: err?.stack || null,
-      },
-    }
-  }
-}
-
-// -------------------------
-// ⚙️ EXECUTOR CALL
-// -------------------------
-async function runExecutor() {
-  console.log("⚙️ Calling executor: /api/actions/execute")
-
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 10000)
-
-  try {
-    const res = await fetch("/api/actions/execute", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(process.env.CRON_SECRET
-          ? {
-              Authorization: `Bearer ${process.env.CRON_SECRET}`,
-            }
-          : {}),
-      },
-      signal: controller.signal,
-    })
-
-    clearTimeout(timeout)
-
-    const raw = await res.text()
-
-    let parsed: unknown = raw
-    try {
-      parsed = JSON.parse(raw)
-    } catch {
-      // leave as raw string
-    }
-
-    if (!res.ok) {
-      console.error("❌ Executor raw response:", raw)
-      throw new Error(
-        `Executor failed (${res.status}): ${JSON.stringify(parsed)}`
-      )
-    }
-
-    console.log("⚙️ Executor response:", parsed)
-
-    return parsed
-  } catch (err: any) {
-    if (err.name === "AbortError") {
-      throw new Error("Executor timeout")
-    }
-
-    throw err
-  }
-}
-
-// -------------------------
-// 🚀 CRON ENTRYPOINT
-// -------------------------
-export async function GET(req: Request) {
+function isAuthorized(req: Request) {
   const authHeader = req.headers.get("authorization")
 
-  // 🔐 Protect cron endpoint
-  if (process.env.CRON_SECRET) {
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return new Response("Unauthorized", { status: 401 })
-    }
-  }
+  // If no secret set, allow (useful for local dev)
+  if (!process.env.CRON_SECRET) return true
 
+  return authHeader === `Bearer ${process.env.CRON_SECRET}`
+}
+
+// -------------------------
+// 🚀 CRON ENTRYPOINT (JOB DISPATCHER ONLY)
+// -------------------------
+export async function GET(req: Request) {
   const start = Date.now()
-  console.log("⚡ Cron started")
+
+  console.log("⚡ Cron dispatcher started")
 
   try {
-    // 🧠 ALERT
-    const alert = await runStage("Alert Engine", async () => {
-      return await runAlertEngine()
-    })
-
-    if (!alert.success) {
-      return Response.json({
-        success: false,
-        stage: "alert_failed",
-        stages: { alert },
-      })
+    // 🔐 Security check
+    if (!isAuthorized(req)) {
+      console.warn("🚫 Unauthorized cron request blocked")
+      return new Response("Unauthorized", { status: 401 })
     }
 
-    // 🧠 DECISION
-    const decision = await runStage("Decision Engine", async () => {
-      return await runDecisionEngine()
+    // 📦 Enqueue Alert Engine job
+    await addWorkflowJob({
+      type: "RUN_ALERT_ENGINE",
     })
 
-    if (!decision.success) {
-      return Response.json({
-        success: false,
-        stage: "decision_failed",
-        stages: { alert, decision },
-      })
-    }
-
-    // ⚙️ EXECUTOR
-    const executor = await runStage("Executor", async () => {
-      return await runExecutor()
+    // 🧠 Enqueue Decision Engine job
+    await addWorkflowJob({
+      type: "RUN_DECISION_ENGINE",
     })
 
-    const totalDuration = Date.now() - start
-    console.log(`✅ Cron finished in ${totalDuration}ms`)
+    // ⚙️ Enqueue Action Executor job
+    await addWorkflowJob({
+      type: "RUN_ACTION_EXECUTOR",
+    })
+
+    const duration = Date.now() - start
+
+    console.log(`✅ Cron jobs enqueued successfully (${duration}ms)`)
 
     return Response.json({
-      success: executor.success,
-      duration: totalDuration,
-      stages: {
-        alert,
-        decision,
-        executor,
-      },
+      success: true,
+      duration,
+      message: "Workflow jobs queued successfully",
     })
   } catch (err: any) {
-    console.error("❌ Cron crashed:", err)
+    console.error("❌ Cron dispatcher failed:", err)
 
     return Response.json(
       {
         success: false,
-        error: err?.message || "cron_crash",
+        error: err?.message || "cron_dispatch_failed",
       },
       { status: 500 }
     )

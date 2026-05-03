@@ -1,17 +1,28 @@
 import { runAlertEngine } from "@/lib/alert-engine"
 import { runDecisionEngine } from "@/lib/decision-engine"
 
-async function runStage(label: string, fn: () => Promise<void>) {
+// -------------------------
+// 🧠 STAGE RUNNER (GENERIC SAFE)
+// -------------------------
+async function runStage<T>(
+  label: string,
+  fn: () => Promise<T>
+) {
   const start = Date.now()
 
   try {
     console.log(`▶️ ${label} started`)
-    await fn()
-    const duration = Date.now() - start
 
+    const result = await fn()
+
+    const duration = Date.now() - start
     console.log(`✅ ${label} finished (${duration}ms)`)
 
-    return { success: true, duration }
+    return {
+      success: true,
+      duration,
+      result,
+    }
   } catch (err: any) {
     const duration = Date.now() - start
 
@@ -22,36 +33,78 @@ async function runStage(label: string, fn: () => Promise<void>) {
       duration,
       error: {
         message: err?.message || "unknown_error",
+        stack: err?.stack || null,
       },
     }
   }
 }
 
-async function runExecutor(req: Request) {
-  const origin = new URL(req.url).origin
-  const url = `${origin}/api/actions/execute`
+// -------------------------
+// ⚙️ EXECUTOR CALL
+// -------------------------
+async function runExecutor() {
+  const baseUrl =
+    process.env.BASE_URL ||
+    process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000"
+
+  const url = `${baseUrl}/api/actions/execute`
 
   console.log("⚙️ Calling executor:", url)
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(process.env.CRON_SECRET
-        ? {
-            Authorization: `Bearer ${process.env.CRON_SECRET}`,
-          }
-        : {}),
-    },
-  })
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 10000)
 
-  if (!res.ok) {
-    const text = await res.text()
-    throw new Error(`Executor failed: ${text}`)
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(process.env.CRON_SECRET
+          ? {
+              Authorization: `Bearer ${process.env.CRON_SECRET}`,
+            }
+          : {}),
+      },
+      signal: controller.signal,
+    })
+
+    clearTimeout(timeout)
+
+    const raw = await res.text()
+
+    let parsed: any = raw
+    try {
+      parsed = JSON.parse(raw)
+    } catch {
+      // keep raw if not JSON
+    }
+
+    if (!res.ok) {
+      console.error("❌ Executor raw response:", raw)
+      throw new Error(
+        `Executor failed (${res.status}): ${JSON.stringify(parsed)}`
+      )
+    }
+
+    console.log("⚙️ Executor response:", parsed)
+
+    return parsed
+  } catch (err: any) {
+    if (err.name === "AbortError") {
+      throw new Error("Executor timeout")
+    }
+
+    throw err
   }
 }
 
+// -------------------------
+// 🚀 CRON ENTRYPOINT
+// -------------------------
 export async function GET(req: Request) {
+  // 🔒 AUTH
   const authHeader = req.headers.get("authorization")
 
   if (process.env.CRON_SECRET) {
@@ -60,32 +113,63 @@ export async function GET(req: Request) {
     }
   }
 
+  const start = Date.now()
   console.log("⚡ Cron started")
 
-  const alert = await runStage("Alert Engine", runAlertEngine)
+  try {
+    // -------------------------
+    // 🧠 ALERT ENGINE
+    // -------------------------
+    const alert = await runStage("Alert Engine", runAlertEngine)
 
-  if (!alert.success) {
-    return Response.json({ success: false, stage: "alert_failed" })
-  }
+    if (!alert.success) {
+      return Response.json({
+        success: false,
+        stage: "alert_failed",
+        stages: { alert },
+      })
+    }
 
-  const decision = await runStage(
-    "Decision Engine",
-    runDecisionEngine
-  )
+    // -------------------------
+    // 🧠 DECISION ENGINE
+    // -------------------------
+    const decision = await runStage("Decision Engine", runDecisionEngine)
 
-  if (!decision.success) {
+    if (!decision.success) {
+      return Response.json({
+        success: false,
+        stage: "decision_failed",
+        stages: { alert, decision },
+      })
+    }
+
+    // -------------------------
+    // ⚙️ ACTION EXECUTOR
+    // -------------------------
+    const executor = await runStage("Action Executor", runExecutor)
+
+    const totalDuration = Date.now() - start
+
+    console.log(`✅ Cron finished in ${totalDuration}ms`)
+
     return Response.json({
-      success: false,
-      stage: "decision_failed",
+      success: executor.success,
+      duration: totalDuration,
+      stages: {
+        alert,
+        decision,
+        executor,
+      },
     })
+  } catch (err: any) {
+    console.error("❌ Cron crashed:", err)
+
+    return Response.json(
+      {
+        success: false,
+        error: err?.message || "cron_crash",
+      },
+      { status: 500 }
+    )
   }
-
-  const executor = await runStage("Executor", () =>
-    runExecutor(req)
-  )
-
-  return Response.json({
-    success: executor.success,
-    stages: { alert, decision, executor },
-  })
 }

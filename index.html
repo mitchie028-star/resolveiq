@@ -1,20 +1,728 @@
-<!-- SAME HEAD + STYLES (no need to repeat, keep yours) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ResolvedIQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --primary: #4f46e5;
+      --primary-2: #6366f1;
+      --green: #16a34a;
+      --amber: #d97706;
+      --blue-soft: #eef2ff;
+      --green-soft: #ecfdf5;
+      --amber-soft: #fffbeb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 32%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 36px 24px 70px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 58px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      width: 220px;
+      height: 76px;
+      overflow: visible;
+    }
+
+    .brand img {
+      width: 190px;
+      max-height: 76px;
+      object-fit: contain;
+      object-position: left center;
+      display: block;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 16px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: white;
+      box-shadow: 0 14px 30px rgba(79, 70, 229, 0.22);
+    }
+
+    .btn-secondary {
+      color: var(--primary);
+      background: white;
+      border: 1px solid #c7d2fe;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .hero {
+      max-width: 900px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: #047857;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12);
+    }
+
+    h1 {
+      font-size: clamp(42px, 6vw, 66px);
+      line-height: 1.03;
+      letter-spacing: -0.055em;
+      margin: 0;
+      max-width: 1040px;
+    }
+
+    .hero-copy {
+      margin: 24px 0 0;
+      max-width: 720px;
+      font-size: 21px;
+      line-height: 1.38;
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .tagline {
+      margin-top: 16px;
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .story-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .story-pill {
+      border: 1px solid var(--line);
+      background: white;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+      color: #334155;
+      padding: 8px 13px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .arrow {
+      color: #94a3b8;
+      font-weight: 800;
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 58px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+      backdrop-filter: blur(10px);
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .card p {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .section {
+      margin-top: 84px;
+    }
+
+    .section h2 {
+      margin: 0 0 22px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    .loop-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .loop-card {
+      position: relative;
+      min-height: 150px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 22px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.07);
+      overflow: hidden;
+    }
+
+    .loop-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), #22c55e);
+      opacity: 0.9;
+    }
+
+    .loop-num {
+      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .loop-card h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .loop-card p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 84px;
+    }
+
+    .feature-panel {
+      border-radius: 26px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 30px;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.07);
+    }
+
+    .feature-panel.qa {
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+    }
+
+    .feature-panel.insights {
+      background: linear-gradient(180deg, #ffffff, #fffdf5);
+    }
+
+    .feature-panel h2 {
+      margin: 0;
+      font-size: 31px;
+      letter-spacing: -0.04em;
+    }
+
+    .feature-panel p {
+      margin: 12px 0 22px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.45;
+    }
+
+    .check-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border-radius: 16px;
+      border: 1px solid #eef2f7;
+      background: rgba(248, 250, 252, 0.8);
+      padding: 14px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .check {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #dcfce7;
+      color: #16a34a;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .insights .check {
+      background: #eef2ff;
+      color: var(--primary);
+    }
+
+    .demo-preview {
+      margin-top: 84px;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 24px;
+      align-items: center;
+      border-radius: 30px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 32px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+    }
+
+    .demo-preview h2 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    .demo-preview p {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .mock-dashboard {
+      border: 1px solid #cbd5e1;
+      border-radius: 22px;
+      background: #f8fafc;
+      padding: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .mock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .mock-title {
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .mock-badge {
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #15803d;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .mock-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 13px;
+      margin-top: 10px;
+    }
+
+    .mock-row strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .mock-row span {
+      display: block;
+      color: #64748b;
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .status {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .green {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .red {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .blue {
+      background: #e0e7ff;
+      color: #4338ca;
+    }
+
+    .cta {
+      margin-top: 86px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: white;
+      padding: 52px 36px;
+      text-align: center;
+      box-shadow: 0 30px 70px rgba(79, 70, 229, 0.26);
+    }
+
+    .cta h2 {
+      margin: 0;
+      font-size: 36px;
+      letter-spacing: -0.04em;
+      color: white;
+    }
+
+    .cta p {
+      margin: 14px auto 0;
+      color: #e0e7ff;
+      font-size: 18px;
+      max-width: 640px;
+      line-height: 1.45;
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .cta .btn-secondary {
+      background: transparent;
+      color: white;
+      border-color: rgba(255,255,255,0.55);
+      box-shadow: none;
+    }
+
+
+    .pricing {
+      margin-top: 84px;
+      border-radius: 30px;
+      border: 1px solid #c7d2fe;
+      background: linear-gradient(180deg, #ffffff, #eef2ff);
+      padding: 34px;
+      box-shadow: 0 24px 60px rgba(79, 70, 229, 0.1);
+    }
+
+    .pricing-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .pricing h2 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    .pricing p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.45;
+      max-width: 660px;
+    }
+
+    .price-card {
+      background: white;
+      border: 1px solid #c7d2fe;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+    }
+
+    .price-label {
+      display: inline-flex;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: #047857;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+
+    .price {
+      font-size: 46px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .price span {
+      font-size: 16px;
+      letter-spacing: 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .price-list {
+      display: grid;
+      gap: 10px;
+      margin: 22px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .price-list li {
+      display: flex;
+      gap: 10px;
+      color: #334155;
+      font-weight: 650;
+    }
+
+    .price-list li::before {
+      content: "✓";
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .pricing-note {
+      margin-top: 16px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+
+    .comparison {
+      margin-top: 84px;
+      border-radius: 30px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 34px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+    }
+
+    .comparison h2 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    .comparison-intro {
+      margin: 12px 0 26px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.45;
+      max-width: 720px;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .scenario-card {
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      padding: 22px;
+    }
+
+    .scenario-card.featured {
+      background: linear-gradient(180deg, #eef2ff, #ffffff);
+      border-color: #c7d2fe;
+      box-shadow: 0 18px 42px rgba(79, 70, 229, 0.12);
+    }
+
+    .scenario-label {
+      display: inline-flex;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--line);
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      color: #475569;
+      margin-bottom: 14px;
+    }
+
+    .scenario-card.featured .scenario-label {
+      color: #4338ca;
+      border-color: #c7d2fe;
+      background: white;
+    }
+
+    .scenario-title {
+      font-size: 21px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 0;
+      font-size: 14px;
+      color: #475569;
+    }
+
+    .cost-row strong {
+      color: #0f172a;
+    }
+
+    .savings-row {
+      margin-top: 16px;
+      border-radius: 16px;
+      background: #ecfdf5;
+      color: #047857;
+      padding: 14px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .comparison-note {
+      margin-top: 18px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      padding: 16px;
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 900px) {
+      .value-grid,
+      .loop-row,
+      .split,
+      .demo-preview,
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-header {
+        display: block;
+      }
+
+      .nav {
+        margin-bottom: 38px;
+      }
+
+      .brand {
+        width: 170px;
+        height: 62px;
+      }
+
+      .brand img {
+        width: 150px;
+        max-height: 62px;
+      }
+
+      .btn {
+        min-height: 44px;
+        padding: 0 16px;
+      }
+
+      .container {
+        padding: 24px 16px 56px;
+      }
+    }
+  </style>
+</head>
 
 <body>
   <main class="container">
-
-    <!-- NAV -->
     <nav class="nav">
       <a class="brand" href="/">
         <img src="RQLogo.png" alt="ResolvedIQ logo" />
       </a>
 
-      <a class="btn btn-primary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank">
+      <a class="btn btn-primary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank" rel="noopener">
         Book Demo
       </a>
     </nav>
 
-    <!-- HERO -->
     <section class="hero">
       <div class="eyebrow"><span class="pulse"></span> Policy-driven CX automation</div>
 
@@ -27,13 +735,14 @@
 
       <div class="hero-actions">
         <a class="btn btn-primary" href="dashboard.html">View Demo</a>
-        <a class="btn btn-secondary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank">
+        <a class="btn btn-secondary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank" rel="noopener">
           Book a Demo
         </a>
       </div>
+
+
     </section>
 
-    <!-- VALUE -->
     <section class="value-grid">
       <div class="card">
         <h3>Prevent tickets before they happen</h3>
@@ -51,20 +760,42 @@
       </div>
     </section>
 
-    <!-- LOOP -->
     <section class="section">
       <h2>A smarter operating loop</h2>
 
       <div class="loop-row">
-        <div class="loop-card"><span class="loop-num">1</span><h3>Detect</h3><p>Identify risk early</p></div>
-        <div class="loop-card"><span class="loop-num">2</span><h3>Decide</h3><p>Apply your policies</p></div>
-        <div class="loop-card"><span class="loop-num">3</span><h3>Act</h3><p>Resolve or escalate</p></div>
-        <div class="loop-card"><span class="loop-num">4</span><h3>Validate</h3><p>QA checks every action</p></div>
-        <div class="loop-card"><span class="loop-num">5</span><h3>Improve</h3><p>Insights show what to fix</p></div>
+        <div class="loop-card">
+          <span class="loop-num">1</span>
+          <h3>Detect</h3>
+          <p>Identify risk early</p>
+        </div>
+
+        <div class="loop-card">
+          <span class="loop-num">2</span>
+          <h3>Decide</h3>
+          <p>Apply your policies</p>
+        </div>
+
+        <div class="loop-card">
+          <span class="loop-num">3</span>
+          <h3>Act</h3>
+          <p>Resolve or escalate</p>
+        </div>
+
+        <div class="loop-card">
+          <span class="loop-num">4</span>
+          <h3>Validate</h3>
+          <p>QA checks every action</p>
+        </div>
+
+        <div class="loop-card">
+          <span class="loop-num">5</span>
+          <h3>Improve</h3>
+          <p>Insights show what to fix</p>
+        </div>
       </div>
     </section>
 
-    <!-- QA + INSIGHTS -->
     <section class="split">
       <div class="feature-panel qa">
         <h2>Every action is checked</h2>
@@ -91,53 +822,54 @@
       </div>
     </section>
 
-    <!-- COMPARISON (FIXED) -->
+
+
     <section class="comparison">
       <h2>Reduce support cost without replacing your team</h2>
-
       <p class="comparison-intro">
-        Support costs scale with volume — whether it's in-house or BPO. 
-        ResolvedIQ reduces repetitive workload so your team handles fewer tickets and focuses on higher-value cases.
+        Support costs scale with volume whether your team is in-house, outsourced, or supported by a BPO partner.
+        ResolvedIQ reduces repetitive workload so agents can focus on higher-value cases that need human judgment.
       </p>
 
       <div class="comparison-grid">
-
         <div class="scenario-card">
           <span class="scenario-label">Small team</span>
           <div class="scenario-title">~1 agent</div>
 
           <div class="cost-row">
             <span>Typical support cost</span>
-            <strong>$800–$1,500/mo</strong>
+            <strong>$800-$1,500/mo</strong>
           </div>
-
           <div class="cost-row">
-            <span>After automation</span>
+            <span>With ResolvedIQ</span>
             <strong>Reduced workload</strong>
           </div>
-
-          <div class="savings-row">
-            Break-even + refund savings
+          <div class="cost-row">
+            <span>Primary impact</span>
+            <strong>Fewer repetitive tickets</strong>
           </div>
+
+          <div class="savings-row">Break-even plus refund savings</div>
         </div>
 
         <div class="scenario-card featured">
           <span class="scenario-label">Growing brand</span>
-          <div class="scenario-title">2–4 agents</div>
+          <div class="scenario-title">2-4 agents</div>
 
           <div class="cost-row">
             <span>Support scales linearly</span>
-            <strong>Higher cost</strong>
+            <strong>More volume, more cost</strong>
           </div>
-
           <div class="cost-row">
             <span>With ResolvedIQ</span>
             <strong>Less workload per agent</strong>
           </div>
-
-          <div class="savings-row">
-            $1k–$3k+ potential savings
+          <div class="cost-row">
+            <span>Primary impact</span>
+            <strong>Cost control + QA</strong>
           </div>
+
+          <div class="savings-row">$1k-$3k+ potential savings</div>
         </div>
 
         <div class="scenario-card">
@@ -145,74 +877,113 @@
           <div class="scenario-title">5+ agents</div>
 
           <div class="cost-row">
-            <span>Large support spend</span>
-            <strong>Operational inefficiency</strong>
+            <span>Support operation</span>
+            <strong>Higher complexity</strong>
           </div>
-
           <div class="cost-row">
             <span>With ResolvedIQ</span>
-            <strong>Significant cost reduction</strong>
+            <strong>More efficient routing</strong>
+          </div>
+          <div class="cost-row">
+            <span>Primary impact</span>
+            <strong>Improved CX operations</strong>
           </div>
 
-          <div class="savings-row">
-            Increasing ROI with scale
-          </div>
+          <div class="savings-row">ROI increases with scale</div>
         </div>
-
       </div>
 
       <div class="comparison-note">
-        Exact savings depend on your setup (in-house vs BPO, region, and workflows). 
-        We’ll calculate this using your real data during the demo.
+        Exact savings depend on your setup, region, ticket volume, refund rate, and workflows. We are not replacing your support team or BPO partner — we reduce repetitive work and help them operate more efficiently. We will calculate this using your real data during the demo.
       </div>
     </section>
 
-    <!-- PRICING (OPTION C) -->
     <section class="pricing">
-      <h2>Start with a small group of early partners</h2>
-
-      <p>
-        We’re working closely with a limited number of brands to prove and refine the system in real workflows.
-      </p>
+      <div class="pricing-header">
+        <div>
+          <h2>Start with a small group of early partners</h2>
+          <p>
+            We are working closely with a limited number of brands to prove and refine the system in real workflows.
+            No surprise pricing, no hidden seat fees.
+          </p>
+        </div>
+      </div>
 
       <div class="price-card">
+        <span class="price-label">Early access</span>
         <div class="price">$750 <span>/ month</span></div>
 
-        <p style="margin-top:15px; font-weight:600;">
-          If we’re not saving you at least 2–3× what you pay, this isn’t worth it.
+        <p style="margin-top:15px; font-weight:700; color:#334155;">
+          If we are not saving you at least 2-3x what you pay, this is not worth it.
         </p>
 
         <ul class="price-list">
           <li>Policy-driven CX automation</li>
           <li>QA validation before responses go out</li>
           <li>CX insights and improvement signals</li>
-          <li>Refund prevention + exchange routing</li>
+          <li>Refund prevention and exchange routing</li>
           <li>Proactive issue detection</li>
-          <li>Human review when needed</li>
+          <li>Human review when judgment is needed</li>
         </ul>
 
-        <a class="btn btn-primary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank">
+        <a class="btn btn-primary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank" rel="noopener">
           Book Demo
         </a>
 
         <div class="pricing-note">
-          Founding customers keep this rate as we expand.
+          Founding customers keep this rate as we expand. We will use your real support data during onboarding to estimate where ResolvedIQ can reduce workload, prevent avoidable refunds, and improve CX quality.
         </div>
       </div>
     </section>
 
-    <!-- CTA -->
+    <section class="demo-preview">
+      <div>
+        <h2>See the operating system in action</h2>
+        <p>
+          Watch ResolvedIQ process real CX scenarios: safe automation, proactive prevention,
+          QA validation, and human review when judgment is needed.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="dashboard.html">View Demo</a>
+          <a class="btn btn-secondary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank" rel="noopener">Book Demo</a>
+        </div>
+      </div>
+
+      <div class="mock-dashboard">
+        <div class="mock-header">
+          <span class="mock-title">Live Resolution Queue</span>
+          <span class="mock-badge">QA active</span>
+        </div>
+
+        <div class="mock-row">
+          <div><strong>Ava Chen</strong><span>Shipment appears stuck</span></div>
+          <span class="status green">Auto-resolved</span>
+        </div>
+
+        <div class="mock-row">
+          <div><strong>Noah Patel</strong><span>Refund risk after expedited delay</span></div>
+          <span class="status red">Human review</span>
+        </div>
+
+        <div class="mock-row">
+          <div><strong>Liam Brooks</strong><span>Refund redirected to exchange</span></div>
+          <span class="status blue">QA passed</span>
+        </div>
+      </div>
+    </section>
+
     <section class="cta">
       <h2>Reduce support costs without sacrificing customer experience</h2>
-      <p>Use automation where it is safe, QA where trust matters, and insights where your CX operation improves.</p>
+      <p>Use automation where it is safe, QA where trust matters, and insights where your CX operation needs to improve.</p>
 
       <div class="cta-actions">
         <a class="btn btn-secondary" href="dashboard.html">View Demo</a>
-        <a class="btn btn-primary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank">
+        <a class="btn btn-primary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank" rel="noopener">
           Book Demo
         </a>
       </div>
     </section>
-
   </main>
 </body>
+</html>

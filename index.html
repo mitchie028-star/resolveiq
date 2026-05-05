@@ -1,185 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ResolvedIQ</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>ResolvedIQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f8fafc;
-      margin: 0;
-      color: #0f172a;
-    }
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  color: #0f172a;
+}
 
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 40px 20px;
-    }
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 40px 20px;
+}
 
-    .nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .btn {
-      padding: 10px 16px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-    }
+.logo {
+  height: 48px; /* FIXED */
+}
 
-    .btn-primary {
-      background: #4f46e5;
-      color: white;
-    }
+.btn {
+  padding: 12px 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+}
 
-    .btn-secondary {
-      border: 1px solid #cbd5f5;
-      color: #4f46e5;
-    }
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+}
 
-    h1 {
-      font-size: 36px;
-      margin-top: 40px;
-    }
+.btn-secondary {
+  border: 1px solid #cbd5f5;
+  color: #4f46e5;
+}
 
-    p {
-      color: #475569;
-      max-width: 600px;
-    }
+h1 {
+  font-size: 42px;
+  line-height: 1.2;
+  margin-top: 60px;
+}
 
-    .steps span {
-      background: #e2e8f0;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      margin-right: 6px;
-    }
+p {
+  color: #475569;
+  max-width: 640px;
+  font-size: 18px;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      margin-top: 40px;
-    }
+.steps span {
+  background: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  margin-right: 6px;
+}
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      border: 1px solid #e2e8f0;
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+  margin-top: 40px;
+}
 
-    .cta {
-      background: #4f46e5;
-      color: white;
-      padding: 40px;
-      border-radius: 20px;
-      text-align: center;
-      margin-top: 60px;
-    }
+.card {
+  background: white;
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
 
-  </style>
+h2 {
+  margin-top: 70px;
+}
+
+.cta {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+  padding: 50px;
+  border-radius: 24px;
+  text-align: center;
+  margin-top: 80px;
+}
+
+.cta p {
+  color: #e0e7ff;
+  margin: auto;
+}
+
+.cta .btn-secondary {
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <!-- NAV -->
-  <div class="nav">
-    <img src="RQLogo.png" height="40">
-    <a href="YOUR_CALENDLY_LINK" class="btn btn-primary">Book Demo</a>
+<!-- NAV -->
+<div class="nav">
+  <img src="RQLogo.png" class="logo">
+  <a href="https://calendly.com/hello-getresolveiq/30min" class="btn btn-primary">
+    Book Demo
+  </a>
+</div>
+
+<!-- HERO -->
+<h1>
+  Improve customer experience while preventing unnecessary support costs
+</h1>
+
+<p>
+  ResolvedIQ detects customer risk, applies your playbooks, resolves safe cases automatically,
+  validates every action with QA, and shows what to improve next.
+</p>
+
+<div style="margin-top:25px;">
+  <a href="#" class="btn btn-primary">View Demo</a>
+  <a href="https://calendly.com/hello-getresolveiq/30min" class="btn btn-secondary">
+    Book a Demo
+  </a>
+</div>
+
+<p style="margin-top:12px; font-size:14px;">
+  Automation handles the work. QA protects the experience. Insights improve the system.
+</p>
+
+<div class="steps" style="margin-top:20px;">
+  <span>Detect</span> →
+  <span>Decide</span> →
+  <span>Act</span> →
+  <span>Validate</span> →
+  <span>Improve</span>
+</div>
+
+<!-- VALUE -->
+<div class="grid">
+  <div class="card">
+    <b>Prevent tickets before they happen</b>
+    <p>Detect delay, refund, and tracking risks early.</p>
   </div>
 
-  <!-- HERO -->
-  <h1>
-    Improve customer experience while preventing unnecessary support costs
-  </h1>
-
-  <p>
-    ResolvedIQ detects customer risk, applies your playbooks, resolves safe cases automatically,
-    validates every action with QA, and shows what to improve next.
-  </p>
-
-  <div style="margin-top:20px;">
-    <a href="#" class="btn btn-primary">View Demo</a>
-    <a href="YOUR_CALENDLY_LINK" class="btn btn-secondary">Book a Demo</a>
+  <div class="card">
+    <b>Protect revenue</b>
+    <p>Reduce unnecessary refunds using policies.</p>
   </div>
 
-  <p style="margin-top:10px; font-size:14px;">
-    Automation handles the work. QA protects the experience. Insights improve the system.
-  </p>
-
-  <div class="steps" style="margin-top:20px;">
-    <span>Detect</span> →
-    <span>Decide</span> →
-    <span>Act</span> →
-    <span>Validate</span> →
-    <span>Improve</span>
+  <div class="card">
+    <b>Improve CX continuously</b>
+    <p>Turn every resolution into insight.</p>
   </div>
+</div>
 
-  <!-- VALUE -->
-  <div class="grid">
-    <div class="card">
-      <b>Prevent tickets before they happen</b>
-      <p>Detect delay, refund, and tracking risks early.</p>
-    </div>
+<!-- LOOP -->
+<h2>A smarter operating loop</h2>
 
-    <div class="card">
-      <b>Protect revenue</b>
-      <p>Reduce unnecessary refunds using policies.</p>
-    </div>
+<div class="grid">
+  <div class="card"><b>Detect</b><p>Identify risk early</p></div>
+  <div class="card"><b>Decide</b><p>Apply your policies</p></div>
+  <div class="card"><b>Act</b><p>Resolve or escalate</p></div>
+  <div class="card"><b>Validate</b><p>QA checks everything</p></div>
+  <div class="card"><b>Improve</b><p>Insights show what to fix</p></div>
+</div>
 
-    <div class="card">
-      <b>Improve CX continuously</b>
-      <p>Turn every resolution into insight.</p>
-    </div>
+<!-- QA -->
+<h2>Every action is checked</h2>
+<ul>
+  <li>Policy compliance</li>
+  <li>Tone and clarity</li>
+  <li>Refund risk control</li>
+  <li>Escalation confidence</li>
+</ul>
+
+<!-- INSIGHTS -->
+<h2>Know what to fix</h2>
+<ul>
+  <li>Shipping expectation gaps</li>
+  <li>Refund risks</li>
+  <li>Exchange opportunities</li>
+  <li>Proactive prevention</li>
+</ul>
+
+<!-- CTA -->
+<div class="cta">
+  <h2>See ResolvedIQ in action</h2>
+  <p>Watch issues being resolved, escalated, and improved in real time.</p>
+
+  <div style="margin-top:25px;">
+    <a href="#" class="btn btn-secondary">View Demo</a>
+    <a href="https://calendly.com/hello-getresolveiq/30min" class="btn btn-primary">
+      Book Demo
+    </a>
   </div>
-
-  <!-- LOOP -->
-  <h2 style="margin-top:60px;">A smarter operating loop</h2>
-
-  <div class="grid">
-    <div class="card"><b>Detect</b><p>Identify risk early</p></div>
-    <div class="card"><b>Decide</b><p>Apply your policies</p></div>
-    <div class="card"><b>Act</b><p>Resolve or escalate</p></div>
-    <div class="card"><b>Validate</b><p>QA checks everything</p></div>
-    <div class="card"><b>Improve</b><p>Insights show what to fix</p></div>
-  </div>
-
-  <!-- QA -->
-  <h2 style="margin-top:60px;">Every action is checked</h2>
-  <ul>
-    <li>Policy compliance</li>
-    <li>Tone and clarity</li>
-    <li>Refund risk control</li>
-    <li>Escalation confidence</li>
-  </ul>
-
-  <!-- INSIGHTS -->
-  <h2 style="margin-top:60px;">Know what to fix</h2>
-  <ul>
-    <li>Shipping expectation gaps</li>
-    <li>Refund risks</li>
-    <li>Exchange opportunities</li>
-    <li>Proactive prevention</li>
-  </ul>
-
-  <!-- CTA -->
-  <div class="cta">
-    <h2>See ResolvedIQ in action</h2>
-    <p>Watch issues being resolved, escalated, and improved in real time.</p>
-
-    <div style="margin-top:20px;">
-      <a href="#" class="btn btn-secondary">View Demo</a>
-      <a href="YOUR_CALENDLY_LINK" class="btn btn-primary">Book Demo</a>
-    </div>
-  </div>
+</div>
 
 </div>
 

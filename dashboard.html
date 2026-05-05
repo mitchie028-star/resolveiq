@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ResolvedIQ Demo Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --primary: #4f46e5;
+      --green: #16a34a;
+      --red: #dc2626;
+      --amber: #d97706;
+      --blue: #2563eb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    main {
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+    }
+
+    .hero {
+      padding: 22px;
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .badges {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .brand {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      gap: 8px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .pill-indigo { background: #eef2ff; color: #4338ca; border-color: #c7d2fe; }
+    .pill-green { background: #ecfdf5; color: #047857; border-color: #bbf7d0; }
+    .pill-blue { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+    .pill-red { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+    .pill-amber { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+    .pill-slate { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 999px;
+      animation: pulse 1.3s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .45; transform: scale(.86); }
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      color: #475569;
+      max-width: 860px;
+      line-height: 1.55;
+      font-size: 15px;
+    }
+
+    .story {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .story span.step {
+      background: #f1f5f9;
+      color: #475569;
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .story span.arrow { color: #cbd5e1; }
+
+    .avg {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 22px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .avg .label {
+      color: #4338ca;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .avg .value {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      margin-top: 4px;
+    }
+
+    .avg .sub {
+      color: #4338ca;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .metric {
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.05);
+    }
+
+    .metric.green { background: #ecfdf5; border-color: #bbf7d0; color: #166534; }
+    .metric.indigo { background: #eef2ff; border-color: #c7d2fe; color: #3730a3; }
+    .metric.amber { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+    .metric.red { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+
+    .metric .label {
+      font-size: 14px;
+      opacity: .82;
+      font-weight: 650;
+    }
+
+    .metric .value {
+      margin-top: 10px;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: #111827;
+    }
+
+    .metric .sub {
+      margin-top: 5px;
+      font-size: 13px;
+      opacity: .72;
+    }
+
+    .grid-main {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 20px;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 20px;
+    }
+
+    .grid-bottom {
+      display: grid;
+      grid-template-columns: 1fr .9fr;
+      gap: 20px;
+    }
+
+    .stack { display: grid; gap: 20px; }
+
+    .section-pad { padding: 22px; }
+
+    .section-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .section-kicker {
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    h2 {
+      margin: 4px 0 0;
+      font-size: 24px;
+      letter-spacing: -0.04em;
+    }
+
+    .queue {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+    }
+
+    .queue-head,
+    .queue-row {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr .9fr .6fr;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 16px;
+    }
+
+    .queue-head {
+      background: #f8fafc;
+      color: #64748b;
+      font-weight: 900;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .queue-row {
+      width: 100%;
+      border: 0;
+      border-top: 1px solid #f1f5f9;
+      background: white;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      color: inherit;
+      transition: background .15s ease, transform .15s ease;
+    }
+
+    .queue-row:hover { background: #f8fafc; }
+
+    .queue-row.selected { background: #eef2ff; }
+    .queue-row.escalated { background: #fff7f7; border-left: 4px solid #f87171; }
+    .queue-row.escalated.selected { background: #fef2f2; border-left: 4px solid #ef4444; }
+
+    .name { font-weight: 900; font-size: 16px; }
+    .small { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .context-main { font-weight: 750; font-size: 14px; }
+    .saved { text-align: right; font-size: 18px; font-weight: 900; }
+
+    .log {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #f8fafc;
+    }
+
+    .log-row {
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 12px;
+      padding: 14px 16px;
+      background: white;
+      border-bottom: 1px solid #f1f5f9;
+      animation: fadeIn .25s ease both;
+    }
+
+    .log-row:last-child { border-bottom: 0; }
+
+    .time {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .log-content {
+      display: flex;
+      gap: 11px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      margin-top: 5px;
+      flex: 0 0 10px;
+    }
+
+    .dot.info { background: #6366f1; }
+    .dot.success { background: #22c55e; }
+    .dot.warning { background: #f59e0b; }
+
+    .log-title {
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .log-detail {
+      margin-top: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #475569;
+      font-size: 12px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message-box {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 22px;
+      min-height: 132px;
+      display: flex;
+      align-items: center;
+    }
+
+    .message-box p {
+      margin: 0;
+      color: #1e293b;
+      line-height: 1.6;
+      font-size: 18px;
+    }
+
+    .why-box {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .why-box strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .why-box p {
+      margin: 0;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .insight-list { margin-top: 18px; display: grid; gap: 12px; }
+    .insight-item {
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .insight-item strong {
+      color: #78350f;
+      font-size: 14px;
+    }
+
+    .insight-item p {
+      margin: 6px 0 0;
+      color: #92400e;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .rule {
+      border: 1px solid #c7d2fe;
+      background: #eef2ff;
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .rule strong { color: #312e81; font-size: 14px; }
+    .rule p { margin: 6px 0 0; color: #4338ca; font-size: 14px; }
+    .code {
+      margin-top: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      border: 1px solid #c7d2fe;
+      background: white;
+      color: #475569;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .mix {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .mix-row {
+      padding: 16px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .mix-row:last-child { border-bottom: 0; }
+
+    .mix-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .bar {
+      margin-top: 10px;
+      height: 8px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      background: var(--primary);
+      border-radius: 999px;
+    }
+
+    .mix-note {
+      margin-top: 9px;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .agent {
+      border-color: #fecaca;
+    }
+
+    .danger-box {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .danger-box strong { color: #7f1d1d; font-size: 14px; }
+    .danger-box p { margin: 6px 0 0; color: #991b1b; font-size: 14px; line-height: 1.45; }
+
+    .assist-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .assist-item {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .assist-item .label {
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .assist-item .value {
+      margin-top: 4px;
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .soft-box {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .soft-box.indigo {
+      border-color: #c7d2fe;
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .soft-box strong { display: block; font-size: 14px; margin-bottom: 6px; }
+    .soft-box p { margin: 0; font-size: 14px; color: #475569; line-height: 1.45; }
+    .soft-box.indigo p { color: #4338ca; }
+
+    .config {
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      border-radius: 18px;
+      padding: 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #475569;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .config .key { color: #4338ca; font-weight: 900; }
+
+    .info-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid #f1f5f9;
+      padding: 12px 0;
+    }
+
+    .info-row:last-child { border-bottom: 0; }
+    .info-row .label { color: #64748b; font-size: 14px; }
+    .info-row .value { text-align: right; font-weight: 850; font-size: 14px; }
+
+    @media (max-width: 1000px) {
+      .hero,
+      .grid-main,
+      .grid-two,
+      .grid-bottom,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .queue-head,
+      .queue-row {
+        grid-template-columns: 1fr;
+      }
+
+      .saved { text-align: left; }
+      main { padding: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="container">
+      <section class="card hero">
+        <div>
+          <div class="badges">
+            <span class="brand">ResolvedIQ Demo</span>
+            <span class="pill pill-indigo">Simulation Mode</span>
+            <span class="pill pill-green"><span class="pulse"></span> Policy-driven CX automation</span>
+          </div>
+
+          <h1>Policy-driven CX automation for support prevention</h1>
+
+          <p>
+            ResolvedIQ detects risk, applies merchant playbooks, resolves safe cases automatically,
+            and routes judgment calls to human review.
+          </p>
+
+          <div class="story">
+            <span class="step">Detect</span><span class="arrow">→</span>
+            <span class="step">Decide</span><span class="arrow">→</span>
+            <span class="step">Act</span><span class="arrow">→</span>
+            <span class="step">Validate</span><span class="arrow">→</span>
+            <span class="step">Improve</span>
+          </div>
+
+          <p style="font-size:12px;color:#94a3b8;">Based on <span id="totalInteractions">6</span> simulated customer interactions.</p>
+        </div>
+
+        <div class="avg">
+          <div class="label">Avg resolution time</div>
+          <div class="value">3.8s</div>
+          <div class="sub">simulated average</div>
+        </div>
+      </section>
+
+      <section class="metrics">
+        <div class="metric green">
+          <div class="label">Tickets Prevented</div>
+          <div class="value" id="ticketsPrevented">5 (83%)</div>
+          <div class="sub">of 6 interactions</div>
+        </div>
+
+        <div class="metric indigo">
+          <div class="label">Revenue Protected</div>
+          <div class="value" id="revenueProtected">$130</div>
+          <div class="sub">estimated savings</div>
+        </div>
+
+        <div class="metric amber">
+          <div class="label">Resolution Rate</div>
+          <div class="value" id="resolutionRate">83% (5/6)</div>
+          <div class="sub">automated outcomes</div>
+        </div>
+
+        <div class="metric red">
+          <div class="label">Optimization Opportunities</div>
+          <div class="value" id="optimizationOpportunities">4 (67%)</div>
+          <div class="sub">fixable improvements</div>
+        </div>
+      </section>
+
+      <section class="grid-main">
+        <section class="card section-pad">
+          <div class="section-title-row">
+            <div>
+              <p class="section-kicker">Live Resolution Queue</p>
+              <h2>Sample interactions being handled</h2>
+            </div>
+            <span class="pill pill-green">6 active simulations</span>
+          </div>
+
+          <div class="queue">
+            <div class="queue-head">
+              <span>Customer</span>
+              <span>Context</span>
+              <span>Status</span>
+              <span style="text-align:right;">Saved</span>
+            </div>
+
+            <div id="queueRows"></div>
+          </div>
+        </section>
+
+        <section class="card section-pad">
+          <div class="section-title-row">
+            <div>
+              <p class="section-kicker">Automation Event Log</p>
+              <h2 id="eventCustomer">Ava Chen</h2>
+            </div>
+            <span id="eventStatus"></span>
+          </div>
+
+          <div class="log" id="eventLog"></div>
+        </section>
+      </section>
+
+      <section class="grid-two">
+        <section class="card section-pad">
+          <div class="section-title-row">
+            <div>
+              <p class="section-kicker">Customer Update</p>
+              <h2>Response generated from policy and context</h2>
+            </div>
+            <span class="pill pill-green" id="channelPill">Sent via email</span>
+          </div>
+
+          <div class="message-box">
+            <p id="typedMessage">Generating response...</p>
+          </div>
+
+          <div class="why-box">
+            <strong>Why this response was chosen</strong>
+            <p id="whyText"></p>
+          </div>
+        </section>
+
+        <section class="card section-pad" id="rightPanel"></section>
+      </section>
+
+      <section class="grid-bottom">
+        <section class="card section-pad">
+          <div class="section-title-row">
+            <div>
+              <p class="section-kicker">Policy Config Preview</p>
+              <h2>How merchants define rules</h2>
+            </div>
+            <span class="pill pill-slate">Merchant config</span>
+          </div>
+
+          <div class="config">
+            <div class="key">expedited_delay_policy:</div>
+            <div>&nbsp;&nbsp;trigger: delay_beyond_sla</div>
+            <div>&nbsp;&nbsp;shipping_method: expedited</div>
+            <div>&nbsp;&nbsp;allowed_actions:</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;- send_apology</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;- offer_discount</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;- agent_review</div>
+            <div>&nbsp;&nbsp;max_credit: $15</div>
+            <div>&nbsp;&nbsp;fallback: escalate_if_refund_requested</div>
+          </div>
+
+          <p style="font-size:14px;color:#64748b;line-height:1.5;margin:16px 0 0;">
+            Clients define the policy. ResolvedIQ applies it automatically when the matching customer situation appears.
+          </p>
+        </section>
+
+        <div class="stack">
+          <section class="card section-pad">
+            <div class="section-title-row">
+              <h2>Merchant Playbook</h2>
+              <span class="pill pill-slate">Policy Applied</span>
+            </div>
+            <div id="playbookDetails"></div>
+          </section>
+
+          <section class="card section-pad">
+            <div class="section-title-row">
+              <h2>Resolution Outcome</h2>
+              <span class="pill pill-slate">Closed Loop</span>
+            </div>
+            <div id="outcomeDetails"></div>
+          </section>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const tickets = [
+      {
+        id: "merchant_test_1",
+        customer: "Ava Chen",
+        issue: "Shipment appears stuck",
+        type: "STUCK_SHIPMENT",
+        severity: "high",
+        status: "Auto-resolved",
+        action: "investigate_shipment",
+        priority: "high",
+        qa: 96,
+        saved: 27,
+        channel: "email",
+        shippingMethod: "Standard",
+        eta: "May 8-10",
+        currentDay: "Day 6 of 5-7",
+        intent: "Where is my order?",
+        reason: "tracking_stalled",
+        solved: true,
+        controlType: "controllable",
+        playbook: "Standard delay follow-up",
+        message: "Looks like your shipment has not updated yet. We are already checking it and will keep you posted."
+      },
+      {
+        id: "merchant_test_2",
+        customer: "Noah Patel",
+        issue: "Refund risk after expedited delay",
+        type: "REFUND_RISK",
+        severity: "high",
+        status: "Escalated",
+        action: "offer_discount_or_agent_review",
+        priority: "high",
+        qa: 89,
+        saved: 0,
+        channel: "email",
+        shippingMethod: "Expedited",
+        eta: "May 5-6",
+        currentDay: "Day 3 of 1-2",
+        intent: "Refund request",
+        reason: "late_delivery",
+        solved: false,
+        controlType: "controllable",
+        playbook: "Expedited delay policy",
+        message: "We are sorry your expedited order is delayed. We are checking what happened and will update you shortly."
+      },
+      {
+        id: "merchant_test_3",
+        customer: "Mia Rivera",
+        issue: "Early shipping inquiry",
+        type: "EARLY_INQUIRY",
+        severity: "low",
+        status: "Customer updated",
+        action: "clarify_shipping_window",
+        priority: "low",
+        qa: 98,
+        saved: 25,
+        channel: "email",
+        shippingMethod: "Standard",
+        eta: "May 9-12",
+        currentDay: "Day 2 of 5-7",
+        intent: "Where is my order?",
+        reason: "within_shipping_window",
+        solved: true,
+        controlType: "uncontrollable",
+        playbook: "Shipping window clarification",
+        message: "Looks like your order is still within the normal shipping window. Tracking should update soon, and we will keep an eye on it."
+      },
+      {
+        id: "merchant_test_4",
+        customer: "Liam Brooks",
+        issue: "Refund request redirected to exchange",
+        type: "REFUND_TO_EXCHANGE",
+        severity: "medium",
+        status: "QA passed",
+        action: "offer_exchange_before_refund",
+        priority: "medium",
+        qa: 94,
+        saved: 40,
+        channel: "email",
+        shippingMethod: "Standard",
+        eta: "Delivered May 3",
+        currentDay: "Post-delivery",
+        intent: "Refund request",
+        reason: "wrong_size",
+        solved: true,
+        controlType: "controllable",
+        playbook: "Exchange-first refund policy",
+        message: "Sorry the size did not work out. We can help you exchange it for the right size and send the replacement details now."
+      },
+      {
+        id: "merchant_test_5",
+        customer: "Sophia Kim",
+        issue: "Tracking confusion",
+        type: "TRACKING_CONFUSION",
+        severity: "medium",
+        status: "Customer updated",
+        action: "clarify_tracking_status",
+        priority: "medium",
+        qa: 92,
+        saved: 20,
+        channel: "email",
+        shippingMethod: "Standard",
+        eta: "May 7-9",
+        currentDay: "Day 4 of 5-7",
+        intent: "Where is my order?",
+        reason: "tracking_not_clear",
+        solved: true,
+        controlType: "uncontrollable",
+        playbook: "Tracking education policy",
+        message: "Your order is still moving normally. Tracking can take time to refresh, and we will keep monitoring it for you."
+      },
+      {
+        id: "merchant_test_6",
+        customer: "Ethan Cole",
+        issue: "Potential delay detected proactively",
+        type: "PROACTIVE_DELAY",
+        severity: "medium",
+        status: "Prevented",
+        action: "send_proactive_delay_update",
+        priority: "medium",
+        qa: 97,
+        saved: 18,
+        channel: "email",
+        shippingMethod: "Standard",
+        eta: "May 10-12",
+        currentDay: "Day 3 of 5-7",
+        intent: "No ticket opened",
+        reason: "carrier_delay_signal",
+        solved: true,
+        controlType: "controllable",
+        playbook: "Proactive delay prevention",
+        message: "We noticed a possible delay with your shipment and are keeping an eye on it. We will update you if anything changes."
+      }
+    ];
+
+    const issueMix = [
+      { label: "Shipping / tracking", count: 3, percent: 50, saved: 72, note: "Expectation-setting and tracking clarity" },
+      { label: "Refund / escalation risk", count: 1, percent: 17, saved: 0, note: "Needs compensation or agent review" },
+      { label: "Refund redirected to exchange", count: 1, percent: 17, saved: 40, note: "Exchange-first policy retained revenue" },
+      { label: "Proactive delay prevention", count: 1, percent: 17, saved: 18, note: "Risk handled before customer contact" }
+    ];
+
+    let selectedIndex = 0;
+    let visibleEvents = 1;
+    let typingTimer;
+    let eventTimers = [];
+    let autoTimer;
+
+    function formatReason(reason) {
+      return reason.replaceAll("_", " ");
+    }
+
+    function formatIntent(intent) {
+      if (intent === "Where is my order?") return "WISMO";
+      if (intent === "No ticket opened") return "Proactive signal";
+      return intent;
+    }
+
+    function shortOpportunity(ticket) {
+      const map = {
+        EARLY_INQUIRY: "Expectation mismatch",
+        REFUND_TO_EXCHANGE: "Refund redirected to exchange",
+        REFUND_RISK: "Refund expectation gap",
+        STUCK_SHIPMENT: "Earlier carrier follow-up",
+        TRACKING_CONFUSION: "Tracking clarity gap",
+        PROACTIVE_DELAY: "Proactive delay prevention"
+      };
+      return map[ticket.type] || ticket.opportunity;
+    }
+
+    function shortRecommendation(ticket) {
+      const map = {
+        EARLY_INQUIRY: "Show delivery window earlier",
+        REFUND_TO_EXCHANGE: "Offer exchange before refund",
+        REFUND_RISK: "Add compensation rule",
+        STUCK_SHIPMENT: "Trigger follow-up earlier",
+        TRACKING_CONFUSION: "Clarify tracking status",
+        PROACTIVE_DELAY: "Notify before customer contacts"
+      };
+      return map[ticket.type] || ticket.recommendation;
+    }
+
+    function statusPill(status) {
+      if (status === "Escalated") return '<span class="pill pill-red">Escalated · manual review</span>';
+      if (status === "Prevented") return '<span class="pill pill-green">Prevented · no ticket created</span>';
+      if (status === "Auto-resolved") return '<span class="pill pill-green">Auto-resolved</span>';
+      if (status === "Customer updated") return '<span class="pill pill-blue">Customer updated</span>';
+      if (status === "QA passed") return '<span class="pill pill-indigo">QA passed</span>';
+      return `<span class="pill pill-slate">${status}</span>`;
+    }
+
+    function renderQueue() {
+      const root = document.getElementById("queueRows");
+      root.innerHTML = tickets.map((ticket, index) => {
+        const selected = index === selectedIndex ? "selected" : "";
+        const escalated = ticket.status === "Escalated" ? "escalated" : "";
+        return `
+          <button class="queue-row ${selected} ${escalated}" onclick="selectTicket(${index})">
+            <div>
+              <div class="name">${ticket.customer}</div>
+              <div class="small">${ticket.id}</div>
+            </div>
+            <div>
+              <div class="context-main">${ticket.issue}</div>
+              <div class="small">${formatIntent(ticket.intent)} · ${formatReason(ticket.reason)}</div>
+            </div>
+            <div>${statusPill(ticket.status)}</div>
+            <div class="saved">$${ticket.saved}</div>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function buildEvents(ticket) {
+      const solvedValue = ticket.solved === null ? "pending" : ticket.solved ? "true" : "false";
+      const isEscalated = ticket.status === "Escalated";
+
+      return [
+        {
+          time: "12:03:14",
+          status: "info",
+          title: ticket.type === "PROACTIVE_DELAY" ? "Delay risk detected before customer contact" : "Customer intent classified",
+          detail: ticket.type === "PROACTIVE_DELAY"
+            ? "type=carrier_delay_signal · confidence=0.84"
+            : `intent=${formatIntent(ticket.intent)} · reason=${formatReason(ticket.reason)}`
+        },
+        {
+          time: "12:03:15",
+          status: "info",
+          title: "Shipping context evaluated",
+          detail: `method=${ticket.shippingMethod} · eta=${ticket.eta} · timeline=${ticket.currentDay}`
+        },
+        {
+          time: "12:03:16",
+          status: "info",
+          title: "Merchant playbook matched",
+          detail: `rule=${ticket.playbook} · policy_source=merchant_config`
+        },
+        {
+          time: "12:03:17",
+          status: isEscalated ? "warning" : "success",
+          title: isEscalated ? "Escalation triggered" : "Workflow selected",
+          detail: isEscalated
+            ? "reason=refund expectation gap · automation_confidence=0.68"
+            : `action=${ticket.action} · confidence=0.91 · priority=${ticket.priority}`
+        },
+        {
+          time: "12:03:18",
+          status: isEscalated ? "warning" : "success",
+          title: isEscalated ? "Ticket routed to human queue" : "QA reviewed response",
+          detail: isEscalated
+            ? "queue=CX review · priority=high · suggested_action=offer credit or approve refund"
+            : `score=${ticket.qa} · policy=pass · clarity=${ticket.qa > 94 ? "high" : "moderate"} · risk=${ticket.severity === "high" ? "elevated" : "low"}`
+        },
+        {
+          time: "12:03:19",
+          status: ticket.solved === false ? "warning" : "success",
+          title: "Resolution outcome measured",
+          detail: `solved=${solvedValue} · control=${ticket.controlType} · follow_up=${ticket.solved === false ? "true" : "false"}`
+        },
+        {
+          time: "12:03:20",
+          status: "info",
+          title: "CX improvement insight generated",
+          detail: `recommendation=${shortRecommendation(ticket)}`
+        }
+      ];
+    }
+
+    function renderEvents() {
+      const ticket = tickets[selectedIndex];
+      const events = buildEvents(ticket).slice(0, visibleEvents);
+      document.getElementById("eventCustomer").textContent = ticket.customer;
+      document.getElementById("eventStatus").innerHTML = statusPill(ticket.status);
+      document.getElementById("eventLog").innerHTML = events.map((event, index) => `
+        <div class="log-row" style="animation-delay:${index * 40}ms">
+          <div class="time">${event.time}</div>
+          <div class="log-content">
+            <span class="dot ${event.status}"></span>
+            <div>
+              <div class="log-title">${event.title}</div>
+              <div class="log-detail">${event.detail}</div>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderTypedMessage() {
+      const ticket = tickets[selectedIndex];
+      clearInterval(typingTimer);
+      let i = 0;
+      const el = document.getElementById("typedMessage");
+      el.innerHTML = '<span style="color:#94a3b8;">Generating response...</span>';
+
+      setTimeout(() => {
+        typingTimer = setInterval(() => {
+          const text = ticket.message.slice(0, i);
+          el.innerHTML = `“${text}<span style="animation:pulse 1s infinite;">|</span>”`;
+          i++;
+          if (i > ticket.message.length) clearInterval(typingTimer);
+        }, 15);
+      }, 1200);
+    }
+
+    function renderCustomerUpdate() {
+      const ticket = tickets[selectedIndex];
+      document.getElementById("channelPill").textContent = `Sent via ${ticket.channel}`;
+      document.getElementById("whyText").textContent =
+        `Intent: ${formatIntent(ticket.intent)} · Playbook: ${ticket.playbook} · Outcome: ${ticket.solved ? "solved" : "not solved"}`;
+      renderTypedMessage();
+    }
+
+    function renderRightPanel() {
+      const ticket = tickets[selectedIndex];
+      const root = document.getElementById("rightPanel");
+
+      if (ticket.status === "Escalated") {
+        root.classList.add("agent");
+        root.innerHTML = `
+          <div class="section-title-row">
+            <div>
+              <p class="section-kicker" style="color:#dc2626;">Agent Assist</p>
+              <h2>Manual review required</h2>
+            </div>
+            <span class="pill pill-red">Confidence 68%</span>
+          </div>
+
+          <div class="danger-box">
+            <strong>Why this was escalated</strong>
+            <p>Expedited shipping is outside SLA and the customer intent is refund-related. Automation paused because the next step may affect revenue or customer trust.</p>
+          </div>
+
+          <div class="assist-grid">
+            <div class="assist-item"><div class="label">Priority</div><div class="value">High</div></div>
+            <div class="assist-item"><div class="label">Queue</div><div class="value">CX review</div></div>
+            <div class="assist-item"><div class="label">Policy</div><div class="value">${ticket.playbook}</div></div>
+            <div class="assist-item"><div class="label">Reason</div><div class="value">${formatReason(ticket.reason)}</div></div>
+          </div>
+
+          <div class="soft-box">
+            <strong>Suggested agent action</strong>
+            <p>Offer a small credit or approve refund depending on order value and customer history.</p>
+          </div>
+
+          <div class="soft-box indigo">
+            <strong>Draft reply</strong>
+            <p>“Thanks for your patience. Your expedited order is delayed, and we are reviewing the best option now. We can offer a credit or help process the next step.”</p>
+          </div>
+        `;
+        return;
+      }
+
+      root.classList.remove("agent");
+      root.innerHTML = `
+        <p class="section-kicker">CX Insights</p>
+        <h2>What the merchant can improve</h2>
+
+        <div class="insight-list">
+          <div class="insight-item">
+            <strong>4 optimization opportunities (67%)</strong>
+            <p>Includes 1 escalation, 1 proactive prevention opportunity, 1 earlier-action opportunity, and 1 case where exchange prevented a refund.</p>
+          </div>
+
+          <div class="rule">
+            <strong>Suggested rule: Handle expedited delays proactively</strong>
+            <p>If an expedited order exceeds SLA, trigger compensation or agent review automatically.</p>
+            <div class="code">
+              trigger: expedited_delay &gt; SLA<br>
+              action: offer_discount OR escalate<br>
+              impact: reduce refund risk
+            </div>
+          </div>
+
+          <div class="insight-item">
+            <strong>Refunds can sometimes be redirected</strong>
+            <p>For wrong-size requests, the merchant playbook can offer exchange details before defaulting to a refund.</p>
+          </div>
+        </div>
+
+        <div class="mix">
+          ${issueMix.map(item => `
+            <div class="mix-row">
+              <div class="mix-top">
+                <span>${item.label}</span>
+                <span>${item.count}/6 (${item.percent}%)</span>
+              </div>
+              <div class="bar"><span style="width:${item.percent}%"></span></div>
+              <div class="mix-note">${item.note} · estimated saved $${item.saved}</div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderDetails() {
+      const ticket = tickets[selectedIndex];
+      document.getElementById("playbookDetails").innerHTML = `
+        ${infoRow("Rule", ticket.playbook)}
+        ${infoRow("Action", ticket.action)}
+        ${infoRow("Recommendation", shortRecommendation(ticket))}
+      `;
+
+      document.getElementById("outcomeDetails").innerHTML = `
+        ${infoRow("Solved?", ticket.solved ? "Yes" : "No")}
+        ${infoRow("Control type", ticket.controlType)}
+        ${infoRow("Opportunity", shortOpportunity(ticket))}
+      `;
+    }
+
+    function infoRow(label, value) {
+      return `
+        <div class="info-row">
+          <span class="label">${label}</span>
+          <span class="value">${value}</span>
+        </div>
+      `;
+    }
+
+    function renderAll() {
+      renderQueue();
+      renderEvents();
+      renderCustomerUpdate();
+      renderRightPanel();
+      renderDetails();
+    }
+
+    function selectTicket(index) {
+      selectedIndex = index;
+      visibleEvents = 1;
+      eventTimers.forEach(clearTimeout);
+      eventTimers = [];
+
+      renderQueue();
+      renderEvents();
+      renderCustomerUpdate();
+      renderRightPanel();
+      renderDetails();
+
+      [2, 3, 4, 5, 6, 7].forEach((count, idx) => {
+        eventTimers.push(setTimeout(() => {
+          visibleEvents = count;
+          renderEvents();
+        }, (idx + 1) * 520));
+      });
+    }
+
+    function startAutoRotation() {
+      autoTimer = setInterval(() => {
+        selectTicket((selectedIndex + 1) % tickets.length);
+      }, 7500);
+    }
+
+    renderAll();
+    selectTicket(0);
+    startAutoRotation();
+  </script>
+</body>
+</html>

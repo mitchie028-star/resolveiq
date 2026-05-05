@@ -1,214 +1,682 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>ResolvedIQ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>ResolvedIQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f8fafc;
-  margin: 0;
-  color: #0f172a;
-}
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --primary: #4f46e5;
+      --primary-2: #6366f1;
+      --green: #16a34a;
+      --amber: #d97706;
+      --blue-soft: #eef2ff;
+      --green-soft: #ecfdf5;
+      --amber-soft: #fffbeb;
+    }
 
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 40px 20px;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 32%),
+        var(--bg);
+      color: var(--text);
+    }
 
-.logo {
-  height: 48px; /* FIXED */
-}
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 36px 24px 70px;
+    }
 
-.btn {
-  padding: 12px 18px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 600;
-  display: inline-block;
-}
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 58px;
+    }
 
-.btn-primary {
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
-  color: white;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      width: 220px;
+      height: 76px;
+      overflow: visible;
+    }
 
-.btn-secondary {
-  border: 1px solid #cbd5f5;
-  color: #4f46e5;
-}
+    .brand img {
+      width: 190px;
+      max-height: 76px;
+      object-fit: contain;
+      object-position: left center;
+      display: block;
+    }
 
-h1 {
-  font-size: 42px;
-  line-height: 1.2;
-  margin-top: 60px;
-}
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 16px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
+    }
 
-p {
-  color: #475569;
-  max-width: 640px;
-  font-size: 18px;
-}
+    .btn:hover {
+      transform: translateY(-1px);
+    }
 
-.steps span {
-  background: #e2e8f0;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  margin-right: 6px;
-}
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: white;
+      box-shadow: 0 14px 30px rgba(79, 70, 229, 0.22);
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 18px;
-  margin-top: 40px;
-}
+    .btn-secondary {
+      color: var(--primary);
+      background: white;
+      border: 1px solid #c7d2fe;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.04);
+    }
 
-.card {
-  background: white;
-  padding: 22px;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-}
+    .hero {
+      max-width: 900px;
+    }
 
-h2 {
-  margin-top: 70px;
-}
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: #047857;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
 
-.cta {
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
-  color: white;
-  padding: 50px;
-  border-radius: 24px;
-  text-align: center;
-  margin-top: 80px;
-}
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12);
+    }
 
-.cta p {
-  color: #e0e7ff;
-  margin: auto;
-}
+    h1 {
+      font-size: clamp(42px, 6vw, 66px);
+      line-height: 1.03;
+      letter-spacing: -0.055em;
+      margin: 0;
+      max-width: 1040px;
+    }
 
-.cta .btn-secondary {
-  border: 1px solid rgba(255,255,255,0.4);
-  color: white;
-}
+    .hero-copy {
+      margin: 24px 0 0;
+      max-width: 720px;
+      font-size: 21px;
+      line-height: 1.38;
+      color: var(--muted);
+    }
 
-</style>
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .tagline {
+      margin-top: 16px;
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .story-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .story-pill {
+      border: 1px solid var(--line);
+      background: white;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+      color: #334155;
+      padding: 8px 13px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .arrow {
+      color: #94a3b8;
+      font-weight: 800;
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 58px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+      backdrop-filter: blur(10px);
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .card p {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .section {
+      margin-top: 84px;
+    }
+
+    .section h2 {
+      margin: 0 0 22px;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    .loop-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .loop-card {
+      position: relative;
+      min-height: 150px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 22px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.07);
+      overflow: hidden;
+    }
+
+    .loop-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), #22c55e);
+      opacity: 0.9;
+    }
+
+    .loop-num {
+      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .loop-card h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .loop-card p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 84px;
+    }
+
+    .feature-panel {
+      border-radius: 26px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 30px;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.07);
+    }
+
+    .feature-panel.qa {
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+    }
+
+    .feature-panel.insights {
+      background: linear-gradient(180deg, #ffffff, #fffdf5);
+    }
+
+    .feature-panel h2 {
+      margin: 0;
+      font-size: 31px;
+      letter-spacing: -0.04em;
+    }
+
+    .feature-panel p {
+      margin: 12px 0 22px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.45;
+    }
+
+    .check-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border-radius: 16px;
+      border: 1px solid #eef2f7;
+      background: rgba(248, 250, 252, 0.8);
+      padding: 14px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .check {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #dcfce7;
+      color: #16a34a;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .insights .check {
+      background: #eef2ff;
+      color: var(--primary);
+    }
+
+    .demo-preview {
+      margin-top: 84px;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 24px;
+      align-items: center;
+      border-radius: 30px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 32px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+    }
+
+    .demo-preview h2 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -0.04em;
+    }
+
+    .demo-preview p {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .mock-dashboard {
+      border: 1px solid #cbd5e1;
+      border-radius: 22px;
+      background: #f8fafc;
+      padding: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .mock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .mock-title {
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .mock-badge {
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #15803d;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .mock-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 13px;
+      margin-top: 10px;
+    }
+
+    .mock-row strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .mock-row span {
+      display: block;
+      color: #64748b;
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .status {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .green {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .red {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .blue {
+      background: #e0e7ff;
+      color: #4338ca;
+    }
+
+    .cta {
+      margin-top: 86px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: white;
+      padding: 52px 36px;
+      text-align: center;
+      box-shadow: 0 30px 70px rgba(79, 70, 229, 0.26);
+    }
+
+    .cta h2 {
+      margin: 0;
+      font-size: 36px;
+      letter-spacing: -0.04em;
+      color: white;
+    }
+
+    .cta p {
+      margin: 14px auto 0;
+      color: #e0e7ff;
+      font-size: 18px;
+      max-width: 640px;
+      line-height: 1.45;
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .cta .btn-secondary {
+      background: transparent;
+      color: white;
+      border-color: rgba(255,255,255,0.55);
+      box-shadow: none;
+    }
+
+    @media (max-width: 900px) {
+      .value-grid,
+      .loop-row,
+      .split,
+      .demo-preview {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        margin-bottom: 38px;
+      }
+
+      .brand {
+        width: 170px;
+        height: 62px;
+      }
+
+      .brand img {
+        width: 150px;
+        max-height: 62px;
+      }
+
+      .btn {
+        min-height: 44px;
+        padding: 0 16px;
+      }
+
+      .container {
+        padding: 24px 16px 56px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <main class="container">
+    <nav class="nav">
+      <a class="brand" href="/">
+        <img src="RQLogo.png" alt="ResolvedIQ logo" />
+      </a>
 
-<div class="container">
+      <a class="btn btn-primary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank" rel="noopener">
+        Book Demo
+      </a>
+    </nav>
 
-<!-- NAV -->
-<div class="nav">
-  <img src="RQLogo.png" class="logo">
-  <a href="https://calendly.com/hello-getresolveiq/30min" class="btn btn-primary">
-    Book Demo
-  </a>
-</div>
+    <section class="hero">
+      <div class="eyebrow"><span class="pulse"></span> Policy-driven CX automation</div>
 
-<!-- HERO -->
-<h1>
-  Improve customer experience while preventing unnecessary support costs
-</h1>
+      <h1>Improve customer experience while preventing unnecessary support costs</h1>
 
-<p>
-  ResolvedIQ detects customer risk, applies your playbooks, resolves safe cases automatically,
-  validates every action with QA, and shows what to improve next.
-</p>
+      <p class="hero-copy">
+        ResolvedIQ detects customer risk, applies your playbooks, resolves safe cases automatically,
+        validates every action with QA, and shows what to improve next.
+      </p>
 
-<div style="margin-top:25px;">
-  <a href="#" class="btn btn-primary">View Demo</a>
-  <a href="https://calendly.com/hello-getresolveiq/30min" class="btn btn-secondary">
-    Book a Demo
-  </a>
-</div>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="dashboard.html">View Demo</a>
+        <a class="btn btn-secondary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank" rel="noopener">
+          Book a Demo
+        </a>
+      </div>
 
-<p style="margin-top:12px; font-size:14px;">
-  Automation handles the work. QA protects the experience. Insights improve the system.
-</p>
+      <p class="tagline">Automation handles the work. QA protects the experience. Insights improve the system.</p>
 
-<div class="steps" style="margin-top:20px;">
-  <span>Detect</span> →
-  <span>Decide</span> →
-  <span>Act</span> →
-  <span>Validate</span> →
-  <span>Improve</span>
-</div>
+      <div class="story-strip">
+        <span class="story-pill">Detect</span><span class="arrow">→</span>
+        <span class="story-pill">Decide</span><span class="arrow">→</span>
+        <span class="story-pill">Act</span><span class="arrow">→</span>
+        <span class="story-pill">Validate</span><span class="arrow">→</span>
+        <span class="story-pill">Improve</span>
+      </div>
+    </section>
 
-<!-- VALUE -->
-<div class="grid">
-  <div class="card">
-    <b>Prevent tickets before they happen</b>
-    <p>Detect delay, refund, and tracking risks early.</p>
-  </div>
+    <section class="value-grid">
+      <div class="card">
+        <h3>Prevent tickets before they happen</h3>
+        <p>Detect delay, refund, and tracking risks before customers reach out.</p>
+      </div>
 
-  <div class="card">
-    <b>Protect revenue</b>
-    <p>Reduce unnecessary refunds using policies.</p>
-  </div>
+      <div class="card">
+        <h3>Protect revenue</h3>
+        <p>Reduce unnecessary refunds using exchange, credit, and escalation policies.</p>
+      </div>
 
-  <div class="card">
-    <b>Improve CX continuously</b>
-    <p>Turn every resolution into insight.</p>
-  </div>
-</div>
+      <div class="card">
+        <h3>Improve CX continuously</h3>
+        <p>Turn every resolution into QA feedback and operational insight.</p>
+      </div>
+    </section>
 
-<!-- LOOP -->
-<h2>A smarter operating loop</h2>
+    <section class="section">
+      <h2>A smarter operating loop</h2>
 
-<div class="grid">
-  <div class="card"><b>Detect</b><p>Identify risk early</p></div>
-  <div class="card"><b>Decide</b><p>Apply your policies</p></div>
-  <div class="card"><b>Act</b><p>Resolve or escalate</p></div>
-  <div class="card"><b>Validate</b><p>QA checks everything</p></div>
-  <div class="card"><b>Improve</b><p>Insights show what to fix</p></div>
-</div>
+      <div class="loop-row">
+        <div class="loop-card">
+          <span class="loop-num">1</span>
+          <h3>Detect</h3>
+          <p>Identify risk early</p>
+        </div>
 
-<!-- QA -->
-<h2>Every action is checked</h2>
-<ul>
-  <li>Policy compliance</li>
-  <li>Tone and clarity</li>
-  <li>Refund risk control</li>
-  <li>Escalation confidence</li>
-</ul>
+        <div class="loop-card">
+          <span class="loop-num">2</span>
+          <h3>Decide</h3>
+          <p>Apply your policies</p>
+        </div>
 
-<!-- INSIGHTS -->
-<h2>Know what to fix</h2>
-<ul>
-  <li>Shipping expectation gaps</li>
-  <li>Refund risks</li>
-  <li>Exchange opportunities</li>
-  <li>Proactive prevention</li>
-</ul>
+        <div class="loop-card">
+          <span class="loop-num">3</span>
+          <h3>Act</h3>
+          <p>Resolve or escalate</p>
+        </div>
 
-<!-- CTA -->
-<div class="cta">
-  <h2>See ResolvedIQ in action</h2>
-  <p>Watch issues being resolved, escalated, and improved in real time.</p>
+        <div class="loop-card">
+          <span class="loop-num">4</span>
+          <h3>Validate</h3>
+          <p>QA checks every action</p>
+        </div>
 
-  <div style="margin-top:25px;">
-    <a href="#" class="btn btn-secondary">View Demo</a>
-    <a href="https://calendly.com/hello-getresolveiq/30min" class="btn btn-primary">
-      Book Demo
-    </a>
-  </div>
-</div>
+        <div class="loop-card">
+          <span class="loop-num">5</span>
+          <h3>Improve</h3>
+          <p>Insights show what to fix</p>
+        </div>
+      </div>
+    </section>
 
-</div>
+    <section class="split">
+      <div class="feature-panel qa">
+        <h2>Every action is checked</h2>
+        <p>QA acts as the trust layer before automation reaches the customer.</p>
 
+        <div class="check-grid">
+          <div class="check-item"><span class="check">✓</span> Policy compliance</div>
+          <div class="check-item"><span class="check">✓</span> Tone and clarity</div>
+          <div class="check-item"><span class="check">✓</span> Refund risk control</div>
+          <div class="check-item"><span class="check">✓</span> Escalation confidence</div>
+        </div>
+      </div>
+
+      <div class="feature-panel insights">
+        <h2>Know what to fix</h2>
+        <p>ResolvedIQ turns support activity into improvement opportunities.</p>
+
+        <div class="check-grid">
+          <div class="check-item"><span class="check">→</span> Shipping expectation gaps</div>
+          <div class="check-item"><span class="check">→</span> Refund risks</div>
+          <div class="check-item"><span class="check">→</span> Exchange opportunities</div>
+          <div class="check-item"><span class="check">→</span> Proactive prevention</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-preview">
+      <div>
+        <h2>See the operating system in action</h2>
+        <p>
+          Watch ResolvedIQ process real CX scenarios: safe automation, proactive prevention,
+          QA validation, and human review when judgment is needed.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="dashboard.html">View Demo</a>
+          <a class="btn btn-secondary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank" rel="noopener">Book Demo</a>
+        </div>
+      </div>
+
+      <div class="mock-dashboard">
+        <div class="mock-header">
+          <span class="mock-title">Live Resolution Queue</span>
+          <span class="mock-badge">QA active</span>
+        </div>
+
+        <div class="mock-row">
+          <div><strong>Ava Chen</strong><span>Shipment appears stuck</span></div>
+          <span class="status green">Auto-resolved</span>
+        </div>
+
+        <div class="mock-row">
+          <div><strong>Noah Patel</strong><span>Refund risk after expedited delay</span></div>
+          <span class="status red">Human review</span>
+        </div>
+
+        <div class="mock-row">
+          <div><strong>Liam Brooks</strong><span>Refund redirected to exchange</span></div>
+          <span class="status blue">QA passed</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <h2>Reduce support costs without sacrificing customer experience</h2>
+      <p>Use automation where it is safe, QA where trust matters, and insights where your CX operation needs to improve.</p>
+
+      <div class="cta-actions">
+        <a class="btn btn-secondary" href="dashboard.html">View Demo</a>
+        <a class="btn btn-primary" href="https://calendly.com/hello-getresolveiq/30min" target="_blank" rel="noopener">
+          Book Demo
+        </a>
+      </div>
+    </section>
+  </main>
 </body>
 </html>

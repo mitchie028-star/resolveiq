@@ -119,29 +119,7 @@
 
     .brand-word span {
       color: #38bdf8;
-    }left center;
     }
-
-    .brand-fallback {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      color: #f8fafc;
-      font-size: 23px;
-      line-height: 1;
-      font-weight: 950;
-      letter-spacing: -0.04em;
-    }
-
-    .brand-mark {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #0f172a 0%, #2563eb 52%, #22d3ee 100%);
-      color: #ffff
 
     .nav-links {
       display: flex;
@@ -1024,25 +1002,11 @@
       }
 
       .hero {
-     .brand {
-        min-width: 180px;
-        max-width: 62vw;
+        min-height: auto;
       }
 
-      .brand img {
-        width: 185px;
-      }
-
-      .brand-fallback {
-        font-size: 20px;
-      }
-
-      .brand-mark {
-        width: 31px;
-        height: 31px;
-        border-radius: 10px;
-        font-size: 12px;
-      }height: 520px;
+      .hero-visual {
+        min-height: 520px;
       }
 
       .main-dashboard {
@@ -1070,8 +1034,23 @@
       }
 
       .brand {
-        width: 210px;
+        min-width: 180px;
         max-width: 62vw;
+      }
+
+      .brand img {
+        width: 185px;
+      }
+
+      .brand-fallback {
+        font-size: 20px;
+      }
+
+      .brand-mark {
+        width: 31px;
+        height: 31px;
+        border-radius: 10px;
+        font-size: 12px;
       }
 
       .nav-links {
@@ -1136,11 +1115,11 @@
 
       .hero-actions .btn,
       .cta-actions .btn,
-      .price-c<img src="RQLogo.svg?v=2" alt="ResolvedIQ logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';" />
-        <span class="brand-fallback" aria-hidden="true">
-          <span class="brand-mark">RQ</span>
-          <span class="brand-word">Resolved<span>IQ</span></span>
-        </span> .hero-visual {
+      .price-card .btn {
+        width: 100%;
+      }
+
+      .hero-visual {
         min-height: 650px;
       }
 
@@ -1168,7 +1147,11 @@
   <main class="page-shell">
     <nav class="nav">
       <a class="brand" href="/" aria-label="ResolvedIQ home">
-        <img src="RQLogo.png" alt="ResolvedIQ logo" />
+        <img src="RQLogo.svg?v=2" alt="ResolvedIQ logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';" />
+        <span class="brand-fallback" aria-hidden="true">
+          <span class="brand-mark">RQ</span>
+          <span class="brand-word">Resolved<span>IQ</span></span>
+        </span>
       </a>
 
       <div class="nav-links" aria-label="Primary navigation">
@@ -1535,6 +1518,8 @@
         </div>
       </section>
     </div>
-  </main>
+    <footer style="padding: 38px 20px 24px; text-align:center; color: rgba(255,255,255,0.55); font-size:14px; font-weight:600; letter-spacing:0.01em;">
+    © 2026 ResolvedIQ. All rights reserved.
+  </footer>
 </body>
 </html>

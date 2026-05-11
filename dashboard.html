@@ -274,6 +274,7 @@
     }
 
     .stack { display: grid; gap: 20px; }
+
     .section-pad { padding: 22px; }
 
     .section-title-row {
@@ -443,7 +444,11 @@
       line-height: 1.5;
     }
 
-    .insight-list { margin-top: 18px; display: grid; gap: 12px; }
+    .insight-list {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
 
     .insight-item {
       border: 1px solid #fde68a;
@@ -665,22 +670,23 @@
         </div>
 
         <div class="avg">
-  <div class="label">Avg workflow resolution</div>
-  <div class="value">3.8s</div>
+          <div class="label">Avg workflow resolution</div>
+          <div class="value">3.8s</div>
 
-  <div class="avg-pills">
-    <span class="pill pill-blue">5 workflows handled</span>
-    <span class="pill pill-green">83% operationally resolved</span>
-  </div>
+          <div class="avg-pills">
+            <span class="pill pill-blue">5 workflows handled</span>
+            <span class="pill pill-green">83% operationally resolved</span>
+          </div>
 
-  <div class="sub">across simulated support workflows</div>
-</div>
+          <div class="sub">across simulated support workflows</div>
+        </div>
+      </section>
 
       <section class="metrics">
         <div class="metric green">
-          <div class="label">Repetitive workload reduced</div>
+          <div class="label">Operational workflows handled</div>
           <div class="value">5 workflows</div>
-          <div class="sub">83% operationally handled</div>
+          <div class="sub">resolved through workflow automation</div>
         </div>
 
         <div class="metric sky">
@@ -865,7 +871,6 @@
         priority: "high",
         qa: 96,
         saved: 27,
-        timeSaved: 5,
         channel: "email",
         shippingMethod: "Standard",
         eta: "May 8-10",
@@ -888,7 +893,6 @@
         priority: "high",
         qa: 89,
         saved: 0,
-        timeSaved: 0,
         channel: "email",
         shippingMethod: "Expedited",
         eta: "May 5-6",
@@ -911,7 +915,6 @@
         priority: "low",
         qa: 98,
         saved: 25,
-        timeSaved: 4,
         channel: "email",
         shippingMethod: "Standard",
         eta: "May 9-12",
@@ -934,7 +937,6 @@
         priority: "medium",
         qa: 94,
         saved: 40,
-        timeSaved: 6,
         channel: "email",
         shippingMethod: "Standard",
         eta: "Delivered May 3",
@@ -957,7 +959,6 @@
         priority: "medium",
         qa: 92,
         saved: 20,
-        timeSaved: 3,
         channel: "email",
         shippingMethod: "Standard",
         eta: "May 7-9",
@@ -980,7 +981,6 @@
         priority: "medium",
         qa: 97,
         saved: 18,
-        timeSaved: 4,
         channel: "email",
         shippingMethod: "Standard",
         eta: "May 10-12",
@@ -1005,7 +1005,6 @@
     let visibleEvents = 1;
     let typingTimer;
     let eventTimers = [];
-    let autoTimer;
 
     function formatReason(reason) {
       return reason.replaceAll("_", " ");
@@ -1061,10 +1060,12 @@
               <div class="name">${ticket.customer}</div>
               <div class="small">${ticket.id}</div>
             </div>
+
             <div>
               <div class="context-main">${ticket.issue}</div>
               <div class="small">${formatIntent(ticket.intent)} · ${formatReason(ticket.reason)}</div>
             </div>
+
             <div>${statusPill(ticket.status)}</div>
             <div class="saved">$${ticket.saved}</div>
           </button>
@@ -1131,6 +1132,7 @@
     function renderEvents() {
       const ticket = tickets[selectedIndex];
       const events = buildEvents(ticket).slice(0, visibleEvents);
+
       document.getElementById("eventCustomer").textContent = ticket.customer;
       document.getElementById("eventStatus").innerHTML = statusPill(ticket.status);
       document.getElementById("eventLog").innerHTML = events.map((event, index) => `
@@ -1150,6 +1152,7 @@
     function renderTypedMessage() {
       const ticket = tickets[selectedIndex];
       clearInterval(typingTimer);
+
       let i = 0;
       const el = document.getElementById("typedMessage");
       el.innerHTML = '<span style="color:#94a3b8;">Preparing policy-based response...</span>';
@@ -1166,9 +1169,11 @@
 
     function renderCustomerUpdate() {
       const ticket = tickets[selectedIndex];
+
       document.getElementById("channelPill").textContent = `Sent via ${ticket.channel}`;
       document.getElementById("whyText").textContent =
         `Workflow: ${formatIntent(ticket.intent)} · Playbook: ${ticket.playbook} · Outcome: ${ticket.solved ? "solved" : "not solved"}`;
+
       renderTypedMessage();
     }
 
@@ -1256,6 +1261,7 @@
 
     function renderDetails() {
       const ticket = tickets[selectedIndex];
+
       document.getElementById("playbookDetails").innerHTML = `
         ${infoRow("Rule", ticket.playbook)}
         ${infoRow("Action", ticket.action)}
@@ -1307,7 +1313,7 @@
     }
 
     function startAutoRotation() {
-      autoTimer = setInterval(() => {
+      setInterval(() => {
         selectTicket((selectedIndex + 1) % tickets.length);
       }, 7500);
     }

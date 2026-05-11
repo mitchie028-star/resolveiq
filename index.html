@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ResolveIQ | Operational Intelligence for Ecommerce Support Teams<</title>
+  <title>ResolveIQ | Operational Intelligence for Ecommerce Support Teams</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
@@ -11,16 +11,16 @@
 
   <style>
     :root {
-      --bg: #05070f;
-      --bg-2: #07111f;
+      --bg: #03120f;
+      --bg-2: #06231f;
       --text: #f8fafc;
       --text-dark: #0f172a;
       --muted: #a7b4c7;
       --muted-dark: #475569;
       --line: rgba(255, 255, 255, 0.14);
-      --line-dark: #e2e8f0;
-      --primary: #6d5dfc;
-      --primary-2: #22d3ee;
+      --line-dark: #dbeafe;
+      --primary: #0ea5e9;
+      --primary-2: #10b981;
       --green: #22c55e;
       --shadow: 0 30px 90px rgba(0, 0, 0, 0.38);
       --radius-xl: 34px;
@@ -35,10 +35,10 @@
       margin: 0;
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at 12% 0%, rgba(109, 93, 252, 0.34), transparent 34%),
-        radial-gradient(circle at 88% 2%, rgba(34, 211, 238, 0.18), transparent 32%),
-        radial-gradient(circle at 52% 40%, rgba(16, 185, 129, 0.09), transparent 28%),
-        linear-gradient(180deg, #05070f 0%, #07111f 57%, #f8fafc 57%, #f8fafc 100%);
+        radial-gradient(circle at 12% 0%, rgba(16, 185, 129, 0.32), transparent 34%),
+        radial-gradient(circle at 88% 2%, rgba(14, 165, 233, 0.24), transparent 32%),
+        radial-gradient(circle at 52% 40%, rgba(34, 197, 94, 0.12), transparent 28%),
+        linear-gradient(180deg, #03120f 0%, #06231f 57%, #f8fafc 57%, #f8fafc 100%);
       color: var(--text);
       overflow-x: hidden;
     }
@@ -80,7 +80,7 @@
       filter:
         brightness(1.15)
         contrast(1.1)
-        drop-shadow(0 6px 18px rgba(37, 99, 235, 0.22));
+        drop-shadow(0 6px 18px rgba(14, 165, 233, 0.24));
     }
 
     .brand-fallback {
@@ -101,11 +101,11 @@
       width: 34px;
       height: 34px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #0f172a 0%, #2563eb 52%, #22d3ee 100%);
+      background: linear-gradient(135deg, #064e3b 0%, #059669 45%, #0ea5e9 100%);
       color: #ffffff;
       font-size: 13px;
       font-weight: 950;
-      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.32);
+      box-shadow: 0 12px 30px rgba(14, 165, 233, 0.28);
     }
 
     .brand-word span { color: #38bdf8; }
@@ -114,7 +114,7 @@
       display: flex;
       align-items: center;
       gap: 26px;
-      color: #e0e7ff;
+      color: #dffcf2;
       font-size: 15px;
       font-weight: 900;
     }
@@ -154,15 +154,15 @@
     .btn:hover { transform: translateY(-1px); }
 
     .btn-primary {
-      background: linear-gradient(135deg, #ffffff, #dbeafe);
-      color: #0f172a;
+      background: linear-gradient(135deg, #ffffff, #d1fae5);
+      color: #052e2b;
       box-shadow: 0 18px 38px rgba(255, 255, 255, 0.16);
     }
 
     .btn-primary.dark {
-      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      background: linear-gradient(135deg, #10b981, #0ea5e9);
       color: #ffffff;
-      box-shadow: 0 18px 42px rgba(79, 70, 229, 0.34);
+      box-shadow: 0 18px 42px rgba(14, 165, 233, 0.28);
     }
 
     .btn-secondary {
@@ -173,9 +173,9 @@
     }
 
     .btn-secondary.light {
-      color: #4338ca;
+      color: #0369a1;
       background: #ffffff;
-      border-color: #c7d2fe;
+      border-color: #bae6fd;
       box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
     }
 
@@ -197,9 +197,9 @@
       gap: 10px;
       margin-bottom: 20px;
       padding: 9px 13px;
-      border: 1px solid rgba(34, 197, 94, 0.24);
+      border: 1px solid rgba(34, 197, 94, 0.26);
       border-radius: 999px;
-      background: rgba(16, 185, 129, 0.11);
+      background: rgba(16, 185, 129, 0.12);
       color: #bbf7d0;
       font-size: 13px;
       font-weight: 900;
@@ -224,7 +224,7 @@
 
     .gradient-text {
       display: inline-block;
-      background: linear-gradient(135deg, #ffffff 0%, #dbeafe 36%, #67e8f9 100%);
+      background: linear-gradient(135deg, #ffffff 0%, #bbf7d0 38%, #38bdf8 100%);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -259,7 +259,7 @@
       border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.065);
-      color: #dbeafe;
+      color: #dffcf2;
       padding: 9px 13px;
       font-size: 13px;
       font-weight: 850;
@@ -278,18 +278,18 @@
       top: 10%;
       border-radius: 999px;
       background:
-        radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.26), transparent 16%),
-        radial-gradient(circle at 52% 50%, rgba(34, 211, 238, 0.43), transparent 28%),
-        radial-gradient(circle at 54% 64%, rgba(109, 93, 252, 0.72), transparent 42%),
-        rgba(34, 211, 238, 0.12);
-      opacity: 0.82;
+        radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.24), transparent 16%),
+        radial-gradient(circle at 48% 48%, rgba(34, 197, 94, 0.38), transparent 28%),
+        radial-gradient(circle at 58% 65%, rgba(14, 165, 233, 0.62), transparent 42%),
+        rgba(16, 185, 129, 0.12);
+      opacity: 0.85;
     }
 
     .ui-card {
       position: absolute;
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 26px;
-      background: rgba(9, 14, 28, 0.72);
+      background: rgba(3, 18, 15, 0.76);
       box-shadow: var(--shadow);
       backdrop-filter: blur(24px);
       overflow: hidden;
@@ -402,9 +402,9 @@
     }
 
     .chip.blue {
-      background: rgba(99, 102, 241, 0.14);
-      color: #c7d2fe;
-      border: 1px solid rgba(99, 102, 241, 0.20);
+      background: rgba(14, 165, 233, 0.14);
+      color: #bae6fd;
+      border: 1px solid rgba(14, 165, 233, 0.22);
     }
 
     .chip.red {
@@ -458,7 +458,7 @@
 
     .section-kicker {
       margin: 0 0 12px;
-      color: #93c5fd;
+      color: #7dd3fc;
       font-size: 14px;
       font-weight: 950;
     }
@@ -503,9 +503,9 @@
       align-items: center;
       justify-content: center;
       border-radius: 14px;
-      background: rgba(99, 102, 241, 0.18);
-      border: 1px solid rgba(199, 210, 254, 0.18);
-      color: #bfdbfe;
+      background: rgba(16, 185, 129, 0.16);
+      border: 1px solid rgba(125, 211, 252, 0.20);
+      color: #bbf7d0;
       font-size: 20px;
       font-weight: 950;
       margin-bottom: 24px;
@@ -543,7 +543,7 @@
     }
 
     .light-kicker {
-      color: #4f46e5;
+      color: #0284c7;
       margin: 0 0 12px;
       font-size: 14px;
       font-weight: 950;
@@ -584,7 +584,7 @@
       position: absolute;
       inset: 0 0 auto;
       height: 5px;
-      background: linear-gradient(90deg, #4f46e5, #22c55e);
+      background: linear-gradient(90deg, #10b981, #0ea5e9);
     }
 
     .loop-num {
@@ -594,8 +594,8 @@
       width: 30px;
       height: 30px;
       border-radius: 999px;
-      background: #eef2ff;
-      color: #4f46e5;
+      background: #ecfdf5;
+      color: #047857;
       font-size: 13px;
       font-weight: 950;
       margin-top: 8px;
@@ -654,7 +654,7 @@
       align-items: flex-start;
       gap: 11px;
       border-radius: 17px;
-      border: 1px solid #eef2f7;
+      border: 1px solid #e0f2fe;
       background: #f8fafc;
       padding: 14px;
       color: #1e293b;
@@ -676,8 +676,8 @@
     }
 
     .arrow-check {
-      background: #eef2ff;
-      color: #4f46e5;
+      background: #e0f2fe;
+      color: #0284c7;
     }
 
     .comparison,
@@ -727,9 +727,9 @@
     }
 
     .scenario-card.featured {
-      background: linear-gradient(180deg, #eef2ff, #ffffff);
-      border-color: #c7d2fe;
-      box-shadow: 0 18px 42px rgba(79, 70, 229, 0.12);
+      background: linear-gradient(180deg, #ecfdf5, #ffffff);
+      border-color: #bae6fd;
+      box-shadow: 0 18px 42px rgba(14, 165, 233, 0.10);
     }
 
     .scenario-label {
@@ -800,7 +800,8 @@
       border-radius: var(--radius-xl);
       border: 1px solid var(--line-dark);
       background:
-        radial-gradient(circle at 92% 12%, rgba(79, 70, 229, 0.12), transparent 28%),
+        radial-gradient(circle at 92% 12%, rgba(14, 165, 233, 0.12), transparent 28%),
+        radial-gradient(circle at 8% 80%, rgba(16, 185, 129, 0.10), transparent 32%),
         #ffffff;
       padding: 38px;
       box-shadow: 0 24px 70px rgba(15, 23, 42, 0.08);
@@ -823,9 +824,9 @@
     }
 
     .pricing {
-      border-color: #c7d2fe;
-      background: linear-gradient(135deg, #ffffff, #eef2ff);
-      box-shadow: 0 24px 70px rgba(79, 70, 229, 0.10);
+      border-color: #bae6fd;
+      background: linear-gradient(135deg, #ffffff, #ecfdf5 52%, #e0f2fe);
+      box-shadow: 0 24px 70px rgba(14, 165, 233, 0.10);
     }
 
     .price-card {
@@ -834,7 +835,7 @@
       gap: 24px;
       margin-top: 28px;
       background: #ffffff;
-      border: 1px solid #c7d2fe;
+      border: 1px solid #bae6fd;
       border-radius: 28px;
       padding: 30px;
       box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
@@ -913,8 +914,9 @@
       border-radius: 28px;
       border: 1px solid rgba(255, 255, 255, 0.14);
       background:
-        radial-gradient(circle at 20% 0%, rgba(109, 93, 252, 0.26), transparent 32%),
-        linear-gradient(180deg, #09111f, #05070f);
+        radial-gradient(circle at 20% 0%, rgba(16, 185, 129, 0.24), transparent 32%),
+        radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.24), transparent 32%),
+        linear-gradient(180deg, #06231f, #03120f);
       color: #ffffff;
       padding: 18px;
       box-shadow: 0 26px 70px rgba(15, 23, 42, 0.32);
@@ -970,12 +972,12 @@
       margin-top: 24px;
       border-radius: var(--radius-xl);
       background:
-        radial-gradient(circle at 22% 20%, rgba(34, 211, 238, 0.28), transparent 30%),
-        linear-gradient(135deg, #111827, #312e81 45%, #4f46e5);
+        radial-gradient(circle at 22% 20%, rgba(34, 197, 94, 0.30), transparent 30%),
+        linear-gradient(135deg, #052e2b, #065f46 45%, #0ea5e9);
       color: #ffffff;
       padding: 58px 38px;
       text-align: center;
-      box-shadow: 0 30px 80px rgba(79, 70, 229, 0.28);
+      box-shadow: 0 30px 80px rgba(14, 165, 233, 0.24);
     }
 
     .cta h2 {
@@ -986,7 +988,7 @@
     }
 
     .cta p {
-      color: #dbeafe;
+      color: #dffcf2;
       margin-left: auto;
       margin-right: auto;
     }
@@ -1159,9 +1161,9 @@
         </div>
 
         <h1>
-  Operational Intelligence for <br/>
-  <span class="gradient-text">Ecommerce Support Teams</span>
-</h1>
+          Operational Intelligence for <br />
+          <span class="gradient-text">Ecommerce Support Teams</span>
+        </h1>
 
         <p class="hero-copy">
           ResolveIQ helps ecommerce support teams reduce repetitive workload, prevent avoidable refunds,

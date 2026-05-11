@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ResolveIQ | AI Support Agent for Shopify Support Teams</title>
+  <title>ResolveIQ | AI-Powered CX Operations System for Ecommerce Brands</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="ResolveIQ helps Shopify support teams automate repetitive tickets like tracking requests, refunds, returns, cancellations, and address changes with guardrails and human escalation."
+    content="ResolveIQ helps ecommerce support teams reduce repetitive ticket workload, improve post-purchase operations, and automate CX workflows with QA-backed automation and human escalation."
   />
 
   <style>
@@ -354,7 +354,7 @@
       display: block;
       margin-top: 7px;
       color: #ffffff;
-      font-size: 25px;
+      font-size: 22px;
       letter-spacing: -0.04em;
     }
 
@@ -437,7 +437,7 @@
     .float-value {
       margin-top: 8px;
       color: #ffffff;
-      font-size: 34px;
+      font-size: 30px;
       line-height: 1;
       font-weight: 950;
       letter-spacing: -0.055em;
@@ -465,7 +465,7 @@
 
     .section-title {
       margin: 0;
-      max-width: 800px;
+      max-width: 850px;
       font-size: clamp(34px, 4.5vw, 58px);
       line-height: 1;
       letter-spacing: -0.06em;
@@ -473,7 +473,7 @@
 
     .section-copy {
       margin: 18px 0 0;
-      max-width: 760px;
+      max-width: 820px;
       color: #a7b4c7;
       font-size: 18px;
       line-height: 1.55;
@@ -751,6 +751,13 @@
       margin-bottom: 12px;
     }
 
+    .scenario-card p {
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
     .cost-row {
       display: flex;
       justify-content: space-between;
@@ -786,6 +793,33 @@
       color: #475569;
       font-size: 15px;
       line-height: 1.5;
+    }
+
+    .operator-section {
+      margin-top: 24px;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--line-dark);
+      background:
+        radial-gradient(circle at 92% 12%, rgba(79, 70, 229, 0.12), transparent 28%),
+        #ffffff;
+      padding: 38px;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.08);
+    }
+
+    .operator-section h2 {
+      margin: 0;
+      max-width: 850px;
+      font-size: clamp(34px, 4vw, 52px);
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .operator-section p {
+      margin: 16px 0 0;
+      color: var(--muted-dark);
+      font-size: 17px;
+      line-height: 1.58;
+      max-width: 850px;
     }
 
     .pricing {
@@ -1060,6 +1094,7 @@
       .comparison,
       .pricing,
       .demo-preview,
+      .operator-section,
       .cta {
         padding: 26px;
         border-radius: 26px;
@@ -1102,6 +1137,7 @@
 
       <div class="nav-links" aria-label="Primary navigation">
         <a href="#platform">Platform</a>
+        <a href="#workflows">Workflows</a>
         <a href="#loop">How it works</a>
         <a href="#pricing">Pricing</a>
         <a href="dashboard.html">Demo</a>
@@ -1117,15 +1153,19 @@
 
     <section class="hero">
       <div class="hero-copy-wrap">
-        <div class="eyebrow"><span class="pulse"></span> Built for Shopify support teams · Founding partners now onboarding</div>
+        <div class="eyebrow">
+          <span class="pulse"></span>
+          Built for Shopify & ecommerce support operations · Founding partners onboarding
+        </div>
 
         <h1>
-          Resolve repetitive ecommerce support tickets <span class="gradient-text">automatically.</span>
+          AI-Powered <span class="gradient-text">CX Operations</span><br />
+          for Ecommerce Brands
         </h1>
 
         <p class="hero-copy">
-          ResolveIQ helps Shopify support teams automate repetitive tickets like tracking requests, refunds, returns,
-          cancellations, address changes, and subscription updates — with guardrails and human escalation built in.
+          ResolveIQ helps ecommerce support teams reduce repetitive workload, prevent avoidable refunds,
+          and improve post-purchase operations through QA-backed automation and operational intelligence.
         </p>
 
         <div class="hero-actions">
@@ -1136,9 +1176,9 @@
         </div>
 
         <div class="hero-proof">
-          <span class="proof-pill">✓ Shopify-first workflows</span>
-          <span class="proof-pill">✓ Human approval for risky actions</span>
-          <span class="proof-pill">✓ Founding partner pilots open</span>
+          <span class="proof-pill">✓ Shopify-native workflows</span>
+          <span class="proof-pill">✓ Human escalation & QA validation</span>
+          <span class="proof-pill">✓ Built from real CX operational experience</span>
         </div>
       </div>
 
@@ -1147,26 +1187,26 @@
 
         <div class="ui-card main-dashboard">
           <div class="dashboard-top">
-            <span class="dashboard-title">Live Resolution Queue</span>
+            <span class="dashboard-title">CX Operations Queue</span>
             <span class="status-pill"><span class="pulse"></span> Guardrails active</span>
           </div>
 
           <div class="metric-grid">
             <div class="mini-metric">
-              <span>Workflow focus</span>
-              <strong>6</strong>
+              <span>Workflow categories</span>
+              <strong>6+</strong>
             </div>
             <div class="mini-metric">
-              <span>Target resolution</span>
-              <strong>&lt;60s</strong>
+              <span>Operational focus</span>
+              <strong>CX Ops</strong>
             </div>
             <div class="mini-metric">
-              <span>Human review</span>
-              <strong>Built in</strong>
+              <span>Escalation layer</span>
+              <strong>Human-controlled</strong>
             </div>
             <div class="mini-metric">
-              <span>Pilot access</span>
-              <strong>Open</strong>
+              <span>Platform approach</span>
+              <strong>QA-backed</strong>
             </div>
           </div>
 
@@ -1187,57 +1227,122 @@
         </div>
 
         <div class="ui-card floating-card qa">
-          <div class="float-label">Trust layer</div>
-          <div class="float-value">QA 96</div>
-          <div class="float-copy">Every automated action is checked against your policies, tone rules, refund limits, and escalation criteria.</div>
+          <div class="float-label">Operational guardrails</div>
+          <div class="float-value">QA-backed</div>
+          <div class="float-copy">
+            Automated actions are validated against refund policies, escalation thresholds,
+            operational workflows, and support rules before customers are affected.
+          </div>
         </div>
 
         <div class="ui-card floating-card savings">
-          <div class="float-label">Repetitive workload</div>
-          <div class="float-value">6 core</div>
-          <div class="float-copy">Tracking, refunds, returns, cancellations, address changes, and subscription updates are the first workflows we automate.</div>
+          <div class="float-label">Core workflows</div>
+          <div class="float-value">Post-purchase</div>
+          <div class="float-copy">
+            ResolveIQ focuses on repetitive operational workflows like tracking requests,
+            refunds, returns, cancellations, and address changes.
+          </div>
         </div>
       </div>
     </section>
 
     <section class="section-dark" id="platform">
-      <p class="section-kicker">Why ecommerce support teams use ResolveIQ</p>
-      <h2 class="section-title">Your support team shouldn’t spend all day answering the same tickets.</h2>
+      <p class="section-kicker">Why ecommerce operators use ResolveIQ</p>
+
+      <h2 class="section-title">
+        Most ecommerce support issues are operational friction problems.
+      </h2>
+
       <p class="section-copy">
-        Most ecommerce support volume comes from repetitive operational workflows: tracking requests,
-        refunds, cancellations, address changes, subscription updates, and return questions. ResolveIQ
-        is built to automate those repeatable workflows so your team can spend more time on complex customers and edge cases.
+        Customers don’t usually get frustrated because a ticket exists. They get frustrated because
+        updates are inconsistent, workflows are fragmented, repetitive issues keep happening, and
+        support teams lack operational visibility.
+        <br /><br />
+        ResolveIQ helps ecommerce teams reduce repetitive support workload while improving visibility
+        into the operational bottlenecks driving customer friction.
       </p>
 
       <div class="value-grid">
         <div class="dark-card">
           <div class="icon-box">01</div>
-          <h3>Automatically resolve repetitive workflows</h3>
-          <p>Handle common support tickets using your Shopify data, CX policies, shipping status, and operational workflows.</p>
+          <h3>Reduce repetitive support workload</h3>
+          <p>
+            Automate repetitive workflows like tracking requests, refunds, cancellations, returns,
+            address changes, and subscription updates using your operational rules and Shopify data.
+          </p>
         </div>
 
         <div class="dark-card">
           <div class="icon-box">02</div>
-          <h3>Keep automation inside your rules</h3>
-          <p>Use approval workflows, refund policies, exchange logic, and escalation rules to safely automate support operations.</p>
+          <h3>Keep automation inside operational guardrails</h3>
+          <p>
+            Apply refund policies, QA validation, escalation thresholds, approval workflows,
+            and operational rules before automated actions reach customers.
+          </p>
         </div>
 
         <div class="dark-card">
           <div class="icon-box">03</div>
-          <h3>Reduce support workload at scale</h3>
-          <p>Lower repetitive ticket volume without continuously increasing headcount as order volume grows.</p>
+          <h3>Improve operational intelligence</h3>
+          <p>
+            Identify the workflows, shipping issues, refund patterns, and operational friction
+            creating unnecessary support volume across your post-purchase experience.
+          </p>
         </div>
       </div>
     </section>
 
     <div class="light-zone">
+      <section class="comparison" id="workflows">
+        <p class="light-kicker">Common ecommerce workflows</p>
+
+        <h2>Built around repetitive post-purchase operations.</h2>
+
+        <p class="comparison-intro">
+          ResolveIQ focuses on repetitive support workflows that consume operational time every day
+          for ecommerce teams.
+        </p>
+
+        <div class="comparison-grid">
+          <div class="scenario-card">
+            <div class="scenario-title">📦 WISMO Requests</div>
+            <p>Automate tracking updates, shipping visibility, and delivery communication.</p>
+          </div>
+
+          <div class="scenario-card">
+            <div class="scenario-title">↩️ Refund Requests</div>
+            <p>Apply refund policies, escalation rules, and QA validation before approvals.</p>
+          </div>
+
+          <div class="scenario-card">
+            <div class="scenario-title">🔄 Returns & Exchanges</div>
+            <p>Handle repetitive return workflows while escalating edge cases to humans.</p>
+          </div>
+
+          <div class="scenario-card">
+            <div class="scenario-title">📍 Address Changes</div>
+            <p>Process operationally safe updates automatically before fulfillment.</p>
+          </div>
+
+          <div class="scenario-card">
+            <div class="scenario-title">⚠️ Escalation Management</div>
+            <p>Route sensitive or high-risk cases to support agents with operational context.</p>
+          </div>
+
+          <div class="scenario-card">
+            <div class="scenario-title">📊 Operational Visibility</div>
+            <p>Identify repeat friction patterns driving unnecessary support workload.</p>
+          </div>
+        </div>
+      </section>
+
       <section class="loop-section" id="loop">
         <div>
           <p class="light-kicker">How it works</p>
           <h2 class="light-title">Detect → Decide → Resolve → Escalate → Improve</h2>
           <p class="light-copy">
-            ResolveIQ identifies repetitive support workflows, applies your CX policies, resolves safe tickets automatically,
-            escalates sensitive situations, and shows what is driving support volume.
+            ResolveIQ combines workflow automation, operational intelligence, QA validation,
+            and human escalation into one CX operations layer for ecommerce support teams.
           </p>
         </div>
 
@@ -1277,19 +1382,25 @@
       <section class="split">
         <div class="feature-panel">
           <h2>Automation with guardrails.</h2>
-          <p>ResolveIQ keeps automation inside your operational policies with approval workflows, escalation rules, and QA validation before actions reach customers.</p>
+          <p>
+            ResolveIQ keeps automation inside your operational policies with approval workflows,
+            escalation rules, and QA validation before actions reach customers.
+          </p>
 
           <div class="check-grid">
             <div class="check-item"><span class="check">✓</span> Approval workflows</div>
             <div class="check-item"><span class="check">✓</span> Human escalation</div>
             <div class="check-item"><span class="check">✓</span> Confidence thresholds</div>
-            <div class="check-item"><span class="check">✓</span> Audit logs</div>
+            <div class="check-item"><span class="check">✓</span> Audit-ready decision history</div>
           </div>
         </div>
 
         <div class="feature-panel">
           <h2>See what’s driving repetitive support volume.</h2>
-          <p>ResolveIQ turns support activity into operational insight, so you can fix the root causes behind recurring customer issues.</p>
+          <p>
+            ResolveIQ turns support activity into operational insight, so you can fix the root causes
+            behind recurring customer issues.
+          </p>
 
           <div class="check-grid">
             <div class="check-item"><span class="check arrow-check">→</span> Delayed shipping patterns</div>
@@ -1303,8 +1414,9 @@
       <section class="comparison">
         <h2>Scale support without scaling repetitive workload.</h2>
         <p class="comparison-intro">
-          As order volume increases, support volume usually increases with it. ResolveIQ reduces repetitive ticket handling
-          so support teams can maintain fast response times without continuously increasing headcount.
+          As order volume increases, support volume usually increases with it. ResolveIQ reduces
+          repetitive ticket handling so support teams can maintain faster workflows without continuously
+          increasing headcount.
         </p>
 
         <div class="comparison-grid">
@@ -1370,16 +1482,40 @@
         </div>
 
         <div class="comparison-note">
-          Exact savings depend on your setup, region, ticket volume, refund rate, and workflows. ResolveIQ does not replace your support team or BPO partner — it reduces repetitive work and helps them operate more efficiently. We calculate ROI using your real data during onboarding.
+          Exact savings depend on your setup, region, ticket volume, refund rate, and workflows.
+          ResolveIQ does not replace your support team or BPO partner — it reduces repetitive work
+          and helps them operate more efficiently. We calculate ROI using your real data during onboarding.
         </div>
       </section>
 
-      <section class="pricing" id="pricing">
-        <p class="light-kicker">Founding partner program</p>
-        <h2>Built with early Shopify operators.</h2>
+      <section class="operator-section">
+        <p class="light-kicker">Built by operators</p>
+
+        <h2>Built from real QA & CX operational experience.</h2>
+
         <p>
-          We are onboarding a small group of founding ecommerce partners to refine support automation around real Shopify workflows.
-          No fake usage claims, no hidden seat fees, and no surprise pricing.
+          ResolveIQ was built from years working across QA, customer experience, training,
+          and operational support environments where repetitive workflows, fragmented systems,
+          and reactive support processes created operational inefficiency at scale.
+        </p>
+
+        <p>
+          That operational experience shaped how ResolveIQ approaches automation: not as a replacement
+          for support teams, but as a smarter operational layer that reduces friction while keeping
+          humans in control.
+        </p>
+      </section>
+
+      <section class="pricing" id="pricing">
+        <p class="light-kicker">Founding Partner Program</p>
+
+        <h2>Built with early ecommerce operators.</h2>
+
+        <p>
+          We’re onboarding a limited number of Shopify and ecommerce teams to refine ResolveIQ using
+          real operational workflows and support environments. No inflated AI promises. No “replace your
+          support team” messaging. No hidden usage traps. Just operational improvements focused on
+          reducing repetitive workload and improving post-purchase CX operations.
         </p>
 
         <div class="price-card">
@@ -1387,7 +1523,8 @@
             <span class="price-label">Founding customer rate</span>
             <div class="price">$750 <span>/ month</span></div>
             <p class="price-subcopy">
-              If ResolveIQ is not saving you at least 2-3x what you pay, it is not doing its job.
+              If ResolveIQ is not helping reduce at least 2-3x the value of what you pay,
+              it is not doing its job.
             </p>
 
             <div style="margin-top:22px;">
@@ -1398,16 +1535,20 @@
           </div>
 
           <ul class="price-list">
-            <li>AI ticket resolution</li>
+            <li>AI-assisted ticket resolution</li>
             <li>Shopify support workflows</li>
             <li>Refund and return automation</li>
-            <li>Human escalation</li>
-            <li>QA validation</li>
+            <li>Human escalation controls</li>
+            <li>QA validation layer</li>
             <li>Operational insights</li>
+            <li>Workflow mapping during onboarding</li>
+            <li>Founding partner feedback loop</li>
           </ul>
 
           <div class="pricing-note">
-            Founding partners keep this rate as we expand. During onboarding, we use your real support workflows to identify which repetitive tickets can safely be automated and where human approval should remain in control.
+            Founding partners keep this rate as we expand. During onboarding, we use your real support
+            workflows to identify which repetitive tickets can safely be automated and where human approval
+            should remain in control.
           </div>
         </div>
       </section>
@@ -1415,10 +1556,10 @@
       <section class="demo-preview">
         <div>
           <p class="light-kicker">Interactive demo</p>
-          <h2>Watch ResolveIQ handle example ecommerce tickets.</h2>
+          <h2>Watch ResolveIQ handle example ecommerce workflows.</h2>
           <p>
-            See how ResolveIQ handles example workflows for tracking requests, refunds, address changes, cancellations,
-            subscription updates, QA validation, and escalation logic.
+            See how ResolveIQ handles example workflows for tracking requests, refunds, address changes,
+            cancellations, subscription updates, QA validation, and escalation logic.
           </p>
 
           <div class="hero-actions">
@@ -1429,7 +1570,7 @@
 
         <div class="mock-dashboard">
           <div class="mock-header">
-            <span class="mock-title">Live Resolution Queue</span>
+            <span class="mock-title">CX Operations Queue</span>
             <span class="mock-badge">Guardrails active</span>
           </div>
 
@@ -1451,9 +1592,10 @@
       </section>
 
       <section class="cta">
-        <h2>Stop scaling support costs with ticket volume.</h2>
+        <h2>Build smarter ecommerce support operations.</h2>
         <p>
-          Automate repetitive Shopify support workflows while keeping humans in control of edge cases and sensitive customer situations.
+          Reduce repetitive support workload, improve operational visibility, and create better post-purchase
+          customer experiences with QA-backed automation and human-controlled workflows.
         </p>
 
         <div class="cta-actions">

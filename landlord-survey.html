@@ -1,1 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Landlord Survey | ResolvedIQ</title>
+
+  <meta
+    name="description"
+    content="Help ResolvedIQ understand how landlords manage tenant screening, deposits, payments and rental administration."
+  >
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --blue: #1267e8;
+      --blue-dark: #0b4fbd;
+      --blue-light: #eaf3ff;
+      --blue-soft: #f5f9ff;
+      --navy: #041b38;
+      --text: #17263d;
+      --muted: #65758b;
+      --border: #e3eaf3;
+      --white: #ffffff;
+      --background: #f8faff;
+      --success: #14835c;
+      --radius: 22px;
+      --container: 860px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Inter", Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .container {
+      width: min(92%, var(--container));
+      margin: 0 auto;
+    }
+
+    /* NAV */
+
+    nav {
+      background: rgba(255,255,255,.95);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      width: min(92%, 1180px);
+      min-height: 88px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .brand-logo img {
+      display: block;
+      width: 225px;
+      height: auto;
+      max-height: 68px;
+      object-fit: contain;
+      object-position: left center;
+    }
+
+    .back-link {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      color: var(--blue);
+    }
+
+    /* HERO */
+
+    .survey-hero {
+      padding: 85px 0 55px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 22px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    .survey-hero h1 {
+      max-width: 760px;
+      margin: 0 auto;
+      color: var(--navy);
+      font-size: clamp(42px, 6vw, 68px);
+      line-height: 1.02;
+      letter-spacing: -3.5px;
+    }
+
+    .survey-hero h1 span {
+      color: var(--blue);
+    }
+
+    .survey-hero p {
+      max-width: 650px;
+      margin: 25px auto 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .survey-meta {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+      gap: 22px;
+      flex-wrap: wrap;
+      color: #8492a6;
+      font-size: 12px;
+    }
+
+    /* SURVEY */
+
+    .survey-wrap {
+      padding: 20px 0 110px;
+    }
+
+    .survey-card {
+      padding: 48px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: 0 25px 70px rgba(15,47,91,.07);
+    }
+
+    .section-heading {
+      padding-bottom: 25px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-number {
+      margin-bottom: 7px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .section-heading h2 {
+      color: var(--navy);
+      font-size: 25px;
+      letter-spacing: -1px;
+    }
+
+    .question {
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .question:last-child {
+      border-bottom: none;
+    }
+
+    .question-label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--navy);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .question-note {
+      display: block;
+      margin-bottom: 17px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .required {
+      color: var(--blue);
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 15px 17px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      cursor: pointer;
+      transition: .18s ease;
+      background: white;
+    }
+
+    .option:hover {
+      border-color: #abc6ee;
+      background: var(--blue-soft);
+    }
+
+    .option input {
+      margin-top: 4px;
+      accent-color: var(--blue);
+    }
+
+    .option span {
+      font-size: 14px;
+    }
+
+    select,
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 14px 15px;
+      color: var(--text);
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      transition: .18s ease;
+    }
+
+    select:focus,
+    input:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(18,103,232,.08);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* SCENARIO */
+
+    .scenario {
+      margin: 35px 0 10px;
+      padding: 28px;
+      border-radius: 18px;
+      background: var(--navy);
+      color: white;
+    }
+
+    .scenario-label {
+      margin-bottom: 10px;
+      color: #8eb5ff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+    }
+
+    .scenario h3 {
+      margin-bottom: 13px;
+      font-size: 21px;
+    }
+
+    .scenario p {
+      color: #bdc9da;
+      font-size: 14px;
+    }
+
+    .scenario-example {
+      margin-top: 19px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 13px;
+      background: rgba(255,255,255,.06);
+    }
+
+    .scenario-example strong {
+      color: white;
+    }
+
+    /* CONDITIONAL */
+
+    .conditional {
+      display: none;
+      margin-top: 17px;
+      padding: 20px;
+      border-radius: 14px;
+      background: var(--blue-soft);
+    }
+
+    .conditional.show {
+      display: block;
+    }
+
+    /* PRIVACY */
+
+    .privacy-note {
+      margin-top: 35px;
+      padding: 20px;
+      border-radius: 14px;
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* BUTTON */
+
+    .submit-area {
+      padding-top: 35px;
+      text-align: center;
+    }
+
+    .submit-btn {
+      min-height: 54px;
+      padding: 0 34px;
+      border: none;
+      border-radius: 999px;
+      background: var(--blue);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(18,103,232,.2);
+      transition: .2s ease;
+    }
+
+    .submit-btn:hover {
+      background: var(--blue-dark);
+      transform: translateY(-2px);
+    }
+
+    .submit-note {
+      margin-top: 13px;
+      color: #8795a8;
+      font-size: 11px;
+    }
+
+    /* THANK YOU */
+
+    #thankYou {
+      display: none;
+      padding: 70px 20px;
+      text-align: center;
+    }
+
+    #thankYou .success-icon {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #e7f8f0;
+      color: var(--success);
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    #thankYou h2 {
+      color: var(--navy);
+      font-size: 34px;
+      letter-spacing: -1.5px;
+    }
+
+    #thankYou p {
+      max-width: 520px;
+      margin: 15px auto 25px;
+      color: var(--muted);
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 35px 0;
+      border-top: 1px solid var(--border);
+      background: white;
+      color: #8996a8;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    @media (max-width: 650px) {
+      .brand-logo img {
+        width: 170px;
+      }
+
+      .survey-hero {
+        padding-top: 60px;
+      }
+
+      .survey-card {
+        padding: 27px 20px;
+      }
+
+      .survey-hero h1 {
+        letter-spacing: -2.5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="nav-inner">
+
+      <a href="index.html" class="brand-logo">
+        <img
+          src="assets/resolvediq-logo.svg"
+          alt="ResolvedIQ - Powered by TalentBuzz"
+        >
+      </a>
+
+      <a href="index.html" class="back-link">
+        ← Back to ResolvedIQ
+      </a>
+
+    </div>
+  </nav>
+
+
+  <header class="survey-hero">
+
+    <div class="container">
+
+      <div class="eyebrow">
+        <span class="dot"></span>
+        Landlord Research
+      </div>
+
+      <h1>
+        Help us build a <span>better rental experience.</span>
+      </h1>
+
+      <p>
+        We're speaking with landlords and property owners to understand
+        what actually matters when screening tenants, managing deposits,
+        collecting rent and running rental properties.
+      </p>
+
+      <div class="survey-meta">
+        <span>About 3 minutes</span>
+        <span>•</span>
+        <span>No commitment</span>
+        <span>•</span>
+        <span>Your feedback helps shape ResolvedIQ</span>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <main class="survey-wrap">
+
+    <div class="container">
+
+      <div class="survey-card">
+
+        <form id="landlordSurvey">
+
+
+          <!-- SECTION 1 -->
+
+          <div class="section-heading">
+
+            <div class="section-number">
+              Part 01
+            </div>
+
+            <h2>
+              About your rental property
+            </h2>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              1. How many residential rental units do you currently own or manage?
+              <span class="required">*</span>
+            </label>
+
+            <div class="options">
+
+              <label class="option">
+                <input type="radio" name="units" value="1" required>
+                <span>1 unit</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="units" value="2-5">
+                <span>2–5 units</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="units" value="6-10">
+                <span>6–10 units</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="units" value="11+">
+                <span>11 or more units</span>
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              2. What type of residential property do you rent out?
+              <span class="required">*</span>
+            </label>
+
+            <span class="question-note">
+              Select all that apply.
+            </span>
+
+            <div class="options">
+
+              <label class="option">
+                <input type="checkbox" name="propertyType" value="Condominium">
+                <span>Condominium</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="propertyType" value="Apartment">
+                <span>Apartment</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="propertyType" value="House">
+                <span>House / townhouse</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="propertyType" value="Other">
+                <span>Other residential property</span>
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <!-- SECTION 2 -->
+
+          <div class="section-heading" style="margin-top:45px;">
+
+            <div class="section-number">
+              Part 02
+            </div>
+
+            <h2>
+              How you manage rentals today
+            </h2>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              3. What do you normally require before a tenant moves in?
+              <span class="required">*</span>
+            </label>
+
+            <span class="question-note">
+              Select all that apply.
+            </span>
+
+            <div class="options">
+
+              <label class="option">
+                <input type="checkbox" name="requirements" value="1 month deposit">
+                <span>1 month security deposit</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="requirements" value="2 months deposit">
+                <span>2 months security deposit</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="requirements" value="Advance rent">
+                <span>Advance rent</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="requirements" value="PDC">
+                <span>Post-dated checks</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="requirements" value="Income proof">
+                <span>Proof of income / employment</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="requirements" value="References">
+                <span>Previous landlord or character references</span>
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              4. Which parts of managing a rental take the most effort?
+            </label>
+
+            <span class="question-note">
+              Select up to three.
+            </span>
+
+            <div class="options">
+
+              <label class="option">
+                <input type="checkbox" name="painPoints" value="Finding tenants">
+                <span>Finding suitable tenants</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="painPoints" value="Screening">
+                <span>Screening applicants</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="painPoints" value="Payments">
+                <span>Collecting rent</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="painPoints" value="Follow-ups">
+                <span>Following up on late payments</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="painPoints" value="Maintenance">
+                <span>Maintenance and tenant concerns</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="painPoints" value="Records">
+                <span>Keeping records and documentation</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="painPoints" value="None">
+                <span>None — I find my current process manageable</span>
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <!-- CORE EXPERIMENT -->
+
+          <div class="section-heading" style="margin-top:45px;">
+
+            <div class="section-number">
+              Part 03
+            </div>
+
+            <h2>
+              A different approach
+            </h2>
+
+          </div>
+
+
+          <div class="scenario">
+
+            <div class="scenario-label">
+              Imagine this scenario
+            </div>
+
+            <h3>
+              A prospective tenant wants to rent your property.
+            </h3>
+
+            <p>
+              The tenant completes identity, employment, income,
+              affordability and applicable verification checks.
+              You receive the relevant verification outcome and
+              retain final approval over the tenancy.
+            </p>
+
+            <p style="margin-top:13px;">
+              Instead of requiring the entire security deposit before
+              move-in, you may choose to allow a qualified tenant to
+              pay part of the deposit upfront and complete the
+              remaining deposit according to an agreed schedule.
+            </p>
+
+            <p style="margin-top:13px;">
+              ResolvedIQ manages the payment process, records,
+              reminders and routine payment follow-ups.
+            </p>
+
+
+            <div class="scenario-example">
+
+              <strong>Example:</strong><br><br>
+
+              Monthly rent: ₱20,000<br>
+              Traditional move-in: ₱60,000<br>
+              Possible flexible move-in: ₱30,000<br><br>
+
+              The remaining security deposit is then built according
+              to the agreed payment schedule.
+
+            </div>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              5. Would you consider this arrangement for a tenant who passed verification?
+              <span class="required">*</span>
+            </label>
+
+            <div class="options">
+
+              <label class="option">
+                <input
+                  type="radio"
+                  name="flexInterest"
+                  value="Yes"
+                  required
+                  onchange="updateConditional()"
+                >
+                <span>Yes, I would consider it</span>
+              </label>
+
+              <label class="option">
+                <input
+                  type="radio"
+                  name="flexInterest"
+                  value="Maybe"
+                  onchange="updateConditional()"
+                >
+                <span>Maybe — depending on the protections</span>
+              </label>
+
+              <label class="option">
+                <input
+                  type="radio"
+                  name="flexInterest"
+                  value="No"
+                  onchange="updateConditional()"
+                >
+                <span>No, I would still require the full deposit upfront</span>
+              </label>
+
+            </div>
+
+
+            <div id="whyNo" class="conditional">
+
+              <label class="question-label">
+                What is your main concern?
+              </label>
+
+              <textarea
+                name="flexConcern"
+                placeholder="Tell us what would make this arrangement unacceptable or too risky for you."
+              ></textarea>
+
+            </div>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              6. What would make you more comfortable offering flexible deposit terms?
+            </label>
+
+            <span class="question-note">
+              Select all that matter to you.
+            </span>
+
+            <div class="options">
+
+              <label class="option">
+                <input type="checkbox" name="protections" value="Income">
+                <span>Verified employment and income</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="protections" value="Affordability">
+                <span>Rent-to-income affordability requirement</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="protections" value="Credit">
+                <span>Credit history / credit check</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="protections" value="Reference">
+                <span>Previous landlord reference</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="protections" value="Minimum deposit">
+                <span>A minimum security deposit paid at move-in</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="protections" value="Short installment">
+                <span>Remaining deposit completed within a short period</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="protections" value="Managed collection">
+                <span>Professional payment collection and follow-up</span>
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              7. What minimum security deposit would you want at move-in?
+            </label>
+
+            <div class="options">
+
+              <label class="option">
+                <input type="radio" name="minimumDeposit" value="25%">
+                <span>25% of one month's rent</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="minimumDeposit" value="50%">
+                <span>50% of one month's rent</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="minimumDeposit" value="1 month">
+                <span>At least 1 full month's rent</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="minimumDeposit" value="Full">
+                <span>I would require my normal full deposit</span>
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              8. If part of the security deposit were paid after move-in, what is the longest period you would consider?
+            </label>
+
+            <div class="options">
+
+              <label class="option">
+                <input type="radio" name="depositPeriod" value="2 months">
+                <span>2 months</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="depositPeriod" value="3 months">
+                <span>3 months</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="depositPeriod" value="6 months">
+                <span>6 months</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="depositPeriod" value="None">
+                <span>I would not allow deposit installments</span>
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <!-- SERVICE -->
+
+          <div class="section-heading" style="margin-top:45px;">
+
+            <div class="section-number">
+              Part 04
+            </div>
+
+            <h2>
+              Managed rental service
+            </h2>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              9. Which services would be valuable enough for you to outsource?
+            </label>
+
+            <div class="options">
+
+              <label class="option">
+                <input type="checkbox" name="services" value="Screening">
+                <span>Tenant screening and verification</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="services" value="Collection">
+                <span>Monthly rent collection</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="services" value="Follow-up">
+                <span>Late-payment reminders and follow-up</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="services" value="Records">
+                <span>Payment records and documentation</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="services" value="Maintenance">
+                <span>Maintenance coordination</span>
+              </label>
+
+              <label class="option">
+                <input type="checkbox" name="services" value="Communication">
+                <span>Routine tenant communication</span>
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              10. If ResolvedIQ handled these services, how would you prefer to pay?
+            </label>
+
+            <div class="options">
+
+              <label class="option">
+                <input type="radio" name="pricingModel" value="Monthly fixed">
+                <span>A fixed monthly fee per property</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="pricingModel" value="Percentage">
+                <span>A percentage of monthly rent collected</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="pricingModel" value="Placement">
+                <span>A one-time fee when a tenant successfully moves in</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="pricingModel" value="Combination">
+                <span>A smaller placement fee + monthly management fee</span>
+              </label>
+
+              <label class="option">
+                <input type="radio" name="pricingModel" value="Would not pay">
+                <span>I would not pay for this type of service</span>
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              11. What would need to be true for you to trust a service like ResolvedIQ with your rental property?
+            </label>
+
+            <textarea
+              name="trust"
+              placeholder="We're particularly interested in what would make you say yes — or what would stop you."
+            ></textarea>
+
+          </div>
+
+
+          <!-- OPTIONAL CONTACT -->
+
+          <div class="section-heading" style="margin-top:45px;">
+
+            <div class="section-number">
+              Optional
+            </div>
+
+            <h2>
+              Help us continue the conversation
+            </h2>
+
+          </div>
+
+
+          <div class="question">
+
+            <label class="question-label">
+              Would you be open to speaking with us for 10–15 minutes about your experience as a landlord?
+            </label>
+
+            <div class="options">
+
+              <label class="option">
+                <input
+                  type="radio"
+                  name="interview"
+                  value="Yes"
+                  onchange="updateContact()"
+                >
+                <span>Yes, I'd be happy to talk</span>
+              </label>
+
+              <label class="option">
+                <input
+                  type="radio"
+                  name="interview"
+                  value="Maybe"
+                  onchange="updateContact()"
+                >
+                <span>Maybe — you can contact me</span>
+              </label>
+
+              <label class="option">
+                <input
+                  type="radio"
+                  name="interview"
+                  value="No"
+                  onchange="updateContact()"
+                >
+                <span>No, survey feedback only</span>
+              </label>
+
+            </div>
+
+
+            <div id="contactDetails" class="conditional">
+
+              <label class="question-label">
+                Email or preferred contact
+              </label>
+
+              <input
+                type="text"
+                name="contact"
+                placeholder="Email address or preferred contact details"
+              >
+
+            </div>
+
+          </div>
+
+
+          <div class="privacy-note">
+
+            <strong>Privacy:</strong>
+            Your responses will be used to help ResolvedIQ understand
+            landlord needs and design its rental service. Contact
+            information is optional and should only be provided if
+            you are comfortable being contacted about this research.
+
+          </div>
+
+
+          <div class="submit-area">
+
+            <button type="submit" class="submit-btn">
+              Submit Feedback →
+            </button>
+
+            <div class="submit-note">
+              Thank you for helping us build this with landlords,
+              not just for landlords.
+            </div>
+
+          </div>
+
+        </form>
+
+
+        <div id="thankYou">
+
+          <div class="success-icon">
+            ✓
+          </div>
+
+          <h2>
+            Thank you.
+          </h2>
+
+          <p>
+            Your feedback will help shape how ResolvedIQ approaches
+            tenant verification, deposits, payment management and
+            landlord services.
+          </p>
+
+          <a
+            href="index.html"
+            style="color:#1267e8;font-weight:600;"
+          >
+            Return to ResolvedIQ →
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <footer>
+    © 2026 TalentBuzz. ResolvedIQ is powered by TalentBuzz.
+  </footer>
+
+
+  <script>
+
+    function updateConditional() {
+
+      const selected =
+        document.querySelector(
+          'input[name="flexInterest"]:checked'
+        );
+
+      const concern =
+        document.getElementById("whyNo");
+
+      if (
+        selected &&
+        (
+          selected.value === "Maybe" ||
+          selected.value === "No"
+        )
+      ) {
+        concern.classList.add("show");
+      } else {
+        concern.classList.remove("show");
+      }
+    }
+
+
+    function updateContact() {
+
+      const selected =
+        document.querySelector(
+          'input[name="interview"]:checked'
+        );
+
+      const contact =
+        document.getElementById("contactDetails");
+
+      if (
+        selected &&
+        (
+          selected.value === "Yes" ||
+          selected.value === "Maybe"
+        )
+      ) {
+        contact.classList.add("show");
+      } else {
+        contact.classList.remove("show");
+      }
+    }
+
+
+    document
+      .getElementById("landlordSurvey")
+      .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        /*
+          IMPORTANT:
+
+          This currently demonstrates the survey UX only.
+
+          Before collecting real responses, connect this form
+          to a database, form service, Google Sheet endpoint,
+          Supabase, Firebase, or your own backend.
+
+          Do not treat the thank-you screen as proof that data
+          has been saved until a real submission endpoint exists.
+        */
+
+        this.style.display = "none";
+
+        document
+          .getElementById("thankYou")
+          .style.display = "block";
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+
+      });
+
+  </script>
+
+</body>
+</html>

@@ -8,11 +8,12 @@
 
   <meta
     name="description"
-    content="ResolvedIQ, powered by TalentBuzz, makes renting simpler through verified tenants, flexible move-in arrangements, payment management, and managed tenancy."
+    content="ResolvedIQ, powered by TalentBuzz, makes renting simpler through tenant verification, flexible move-in arrangements, payment management, and managed tenancy."
   >
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
@@ -166,6 +167,20 @@
       color: var(--blue);
     }
 
+    .btn-white:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-dark {
+      border-color: rgba(255,255,255,.3);
+      color: white;
+    }
+
+    .btn-outline-dark:hover {
+      border-color: rgba(255,255,255,.7);
+      background: rgba(255,255,255,.06);
+    }
+
     /* HERO */
 
     .hero {
@@ -274,6 +289,30 @@
       font-size: 17px;
     }
 
+    /* POWERED BY */
+
+    .powered-by {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 5px;
+      margin-top: 19px;
+      color: #7a899d;
+      font-size: 11px;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    .powered-by strong {
+      color: var(--navy);
+      font-size: 14px;
+      letter-spacing: -.3px;
+      text-transform: none;
+    }
+
+    .powered-by strong span {
+      color: var(--blue);
+    }
+
     /* TRUST */
 
     .trust-strip {
@@ -311,7 +350,7 @@
       font-weight: 800;
     }
 
-    /* SECTIONS */
+    /* GENERAL SECTIONS */
 
     section {
       padding: 120px 0;
@@ -429,7 +468,7 @@
       color: var(--muted);
     }
 
-    /* FLEXIBLE DEPOSIT */
+    /* TENANTS */
 
     .flex-section {
       background: var(--blue-soft);
@@ -511,7 +550,7 @@
       font-size: 12px;
     }
 
-    /* LANDLORD */
+    /* LANDLORDS */
 
     .landlord-grid {
       margin-top: 65px;
@@ -564,6 +603,45 @@
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 42px;
+    }
+
+    /* RESEARCH CTA */
+
+    .research-strip {
+      padding: 0 0 120px;
+    }
+
+    .research-box {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 50px;
+      padding: 45px 50px;
+      border: 1px solid #cfe0fb;
+      border-radius: 25px;
+      background: var(--blue-soft);
+    }
+
+    .research-label {
+      margin-bottom: 9px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .research-box h3 {
+      color: var(--navy);
+      font-size: 28px;
+      letter-spacing: -1px;
+    }
+
+    .research-box p {
+      max-width: 680px;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     /* MANAGED */
@@ -686,35 +764,6 @@
       gap: 11px;
     }
 
-    .btn-outline-dark {
-      border-color: rgba(255,255,255,.3);
-      color: white;
-    }
-
-    /* POWERED BY */
-
-    .powered-by {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 5px;
-      margin-top: 19px;
-      color: #7a899d;
-      font-size: 11px;
-      letter-spacing: 1.1px;
-      text-transform: uppercase;
-    }
-
-    .powered-by strong {
-      color: var(--navy);
-      font-size: 14px;
-      letter-spacing: -.3px;
-      text-transform: none;
-    }
-
-    .powered-by strong span {
-      color: var(--blue);
-    }
-
     /* FOOTER */
 
     footer {
@@ -780,7 +829,7 @@
       font-size: 11px;
     }
 
-    /* MOBILE */
+    /* RESPONSIVE */
 
     @media (max-width: 960px) {
       .nav-links {
@@ -805,6 +854,11 @@
 
       .step p {
         grid-column: 2;
+      }
+
+      .research-box {
+        grid-template-columns: 1fr;
+        gap: 25px;
       }
     }
 
@@ -861,6 +915,14 @@
         padding: 25px;
       }
 
+      .research-strip {
+        padding-bottom: 88px;
+      }
+
+      .research-box {
+        padding: 32px 25px;
+      }
+
       .cta-box {
         padding: 48px 28px;
       }
@@ -891,7 +953,7 @@
   <nav>
     <div class="container nav-inner">
 
-      <a href="#" class="brand-logo" aria-label="ResolvedIQ Home">
+      <a href="index.html" class="brand-logo" aria-label="ResolvedIQ Home">
         <img
           src="assets/resolvediq-logo.svg"
           alt="ResolvedIQ - Managed Renting, Made Simpler - Powered by TalentBuzz"
@@ -906,8 +968,8 @@
       </div>
 
       <div class="nav-actions">
-        <a href="#landlords" class="btn btn-secondary">
-          List a Property
+        <a href="landlord-survey.html" class="btn btn-secondary">
+          I'm a Landlord
         </a>
 
         <a href="#tenants" class="btn btn-primary">
@@ -939,9 +1001,10 @@
         <div>
 
           <p class="hero-copy">
-            ResolvedIQ connects verified tenants with landlords
-            and manages the rental journey — from property viewing
-            and verification to payments and ongoing tenancy support.
+            ResolvedIQ connects tenants and landlords through a more
+            structured rental journey — from property viewing and
+            qualification to verification, payments and ongoing
+            tenancy support.
           </p>
 
           <div class="hero-buttons">
@@ -951,7 +1014,7 @@
             </a>
 
             <a href="#landlords" class="btn btn-secondary">
-              List Your Property
+              I'm a Landlord
             </a>
 
           </div>
@@ -962,7 +1025,6 @@
           </div>
 
         </div>
-
 
         <div class="hero-note">
 
@@ -990,7 +1052,7 @@
 
       <div class="trust-item">
         <span class="check">✓</span>
-        Verified applicants
+        Structured verification
       </div>
 
       <div class="trust-item">
@@ -1027,10 +1089,10 @@
       </h2>
 
       <p class="section-description">
-        The traditional rental process creates friction on both
-        sides. ResolvedIQ is designed to create a better middle ground.
+        The traditional rental process can create friction on both
+        sides. ResolvedIQ is being designed to create a better
+        middle ground.
       </p>
-
 
       <div class="problem-grid">
 
@@ -1051,7 +1113,6 @@
           </p>
 
         </div>
-
 
         <div class="problem-card">
 
@@ -1093,9 +1154,9 @@
 
       <p class="section-description">
         A structured rental journey designed to make the process
-        clearer for tenants while protecting landlord control.
+        clearer for tenants while keeping the landlord in control
+        of the final tenancy decision.
       </p>
-
 
       <div class="steps">
 
@@ -1105,11 +1166,10 @@
           <h3>Find & view</h3>
 
           <p>
-            Browse available homes, choose a property and schedule
-            a viewing before making any commitment.
+            Browse available homes, select a property and schedule
+            a viewing before deciding whether you want to apply.
           </p>
         </div>
-
 
         <div class="step">
           <div class="step-number">02</div>
@@ -1117,11 +1177,10 @@
           <h3>Pre-qualify</h3>
 
           <p>
-            Found a property you want? Complete a free initial
+            Interested in the property? Complete an initial
             eligibility and affordability check.
           </p>
         </div>
-
 
         <div class="step">
           <div class="step-number">03</div>
@@ -1129,46 +1188,66 @@
           <h3>Landlord confirmation</h3>
 
           <p>
-            Before you pay for formal verification, we confirm that
-            the landlord is willing to consider your application
+            Before formal verification begins, we confirm that the
+            landlord wants to proceed with the prospective tenant
             and proposed rental arrangement.
           </p>
         </div>
 
-
         <div class="step">
           <div class="step-number">04</div>
 
-          <h3>Get verified</h3>
+          <h3>Paid verification</h3>
 
           <p>
-            Complete the required identity, employment, income,
-            affordability and applicable screening checks.
+            Once the landlord confirms, the tenant can proceed with
+            the applicable verification process and pay the
+            disclosed verification or processing fee.
           </p>
         </div>
-
 
         <div class="step">
           <div class="step-number">05</div>
 
-          <h3>Landlord decision</h3>
+          <h3>Verification & results</h3>
 
           <p>
-            ResolvedIQ communicates the verification outcome.
-            The landlord retains the final decision on the tenancy.
+            Required identity, employment, income, affordability
+            and other applicable checks are completed. Relevant
+            results are then communicated to the tenant and landlord.
           </p>
         </div>
-
 
         <div class="step">
           <div class="step-number">06</div>
 
-          <h3>Sign & move in</h3>
+          <h3>Landlord decision</h3>
 
           <p>
-            Confirm the rental terms, complete the required
-            agreements, make the agreed move-in payment and
-            prepare for handover.
+            The landlord reviews the relevant outcome and retains
+            final approval of the tenancy.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">07</div>
+
+          <h3>Confirm move-in</h3>
+
+          <p>
+            Once approved, we confirm the tenant's intended move-in
+            date and the agreed move-in requirements.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">08</div>
+
+          <h3>Payment & paperwork</h3>
+
+          <p>
+            The tenant completes the agreed move-in payment and the
+            required rental documentation is prepared and completed.
           </p>
         </div>
 
@@ -1179,7 +1258,7 @@
   </section>
 
 
-  <!-- TENANTS / FLEXIBLE DEPOSIT -->
+  <!-- TENANTS -->
   <section class="flex-section" id="tenants">
 
     <div class="container deposit-layout">
@@ -1195,9 +1274,10 @@
         </h2>
 
         <p class="section-description">
-          Qualified tenants may be offered a structured security
-          deposit arrangement where part of the deposit is built
-          over time rather than paid entirely before move-in.
+          For participating properties, qualified tenants may be
+          considered for a structured security deposit arrangement
+          where part of the deposit is completed over an agreed
+          period rather than paid entirely before move-in.
         </p>
 
         <div style="margin-top:31px;">
@@ -1223,13 +1303,12 @@
 
         </div>
 
-
         <div class="comparison">
 
           <div class="price-card">
 
             <div class="price-label">
-              Traditional
+              Traditional Example
             </div>
 
             <div class="price">
@@ -1242,7 +1321,6 @@
             </div>
 
           </div>
-
 
           <div class="price-card highlight">
 
@@ -1263,12 +1341,11 @@
 
         </div>
 
-
         <p class="disclaimer">
-          Example for illustration only. Flexible deposit arrangements
-          depend on tenant qualification, property requirements and
-          landlord approval. Any remaining security deposit is paid
-          according to the agreed schedule.
+          Illustration only. Actual deposits, advance rent, fees and
+          payment arrangements vary by property and agreement.
+          Flexible arrangements are subject to qualification and
+          landlord approval.
         </p>
 
       </div>
@@ -1292,10 +1369,10 @@
       </h2>
 
       <p class="section-description">
-        ResolvedIQ helps manage the administrative side of renting
-        while you retain control over who rents your property.
+        ResolvedIQ is being designed to help manage the
+        administrative side of renting while keeping the property
+        owner in control of the final tenant decision.
       </p>
-
 
       <div class="landlord-grid">
 
@@ -1305,11 +1382,10 @@
           <h3>Tenant verification</h3>
 
           <p>
-            Structured applicant screening before tenants reach
-            your final approval stage.
+            A structured applicant verification process before the
+            final tenancy decision.
           </p>
         </div>
-
 
         <div class="feature-card">
           <div class="feature-icon">02</div>
@@ -1317,11 +1393,10 @@
           <h3>Payment management</h3>
 
           <p>
-            Rental collection processes, reminders, records and
-            payment follow-ups managed more systematically.
+            More systematic payment administration, reminders,
+            records and follow-up.
           </p>
         </div>
-
 
         <div class="feature-card">
           <div class="feature-icon">03</div>
@@ -1334,18 +1409,16 @@
           </p>
         </div>
 
-
         <div class="feature-card">
           <div class="feature-icon">04</div>
 
           <h3>Tenant communication</h3>
 
           <p>
-            Routine tenant concerns and payment communication can
-            be coordinated through ResolvedIQ.
+            Routine tenant communication and payment-related
+            coordination through a structured process.
           </p>
         </div>
-
 
         <div class="feature-card">
           <div class="feature-icon">05</div>
@@ -1353,11 +1426,10 @@
           <h3>Maintenance coordination</h3>
 
           <p>
-            Property concerns are documented and coordinated with
-            the appropriate parties.
+            Property concerns can be documented and coordinated
+            with the appropriate parties.
           </p>
         </div>
-
 
         <div class="feature-card">
           <div class="feature-icon">06</div>
@@ -1365,22 +1437,17 @@
           <h3>You stay in control</h3>
 
           <p>
-            We verify and facilitate. Final tenant approval
-            remains with you.
+            ResolvedIQ facilitates the process. Final tenant
+            approval remains with the landlord.
           </p>
         </div>
 
       </div>
 
-
       <div class="landlord-actions">
 
-        <a href="#" class="btn btn-primary">
-          List Your Property →
-        </a>
-
-        <a href="#" class="btn btn-secondary">
-          Take the Landlord Survey
+        <a href="landlord-survey.html" class="btn btn-primary">
+          Take the Landlord Survey →
         </a>
 
       </div>
@@ -1388,6 +1455,43 @@
     </div>
 
   </section>
+
+
+  <!-- LANDLORD RESEARCH -->
+  <div class="research-strip">
+
+    <div class="container">
+
+      <div class="research-box">
+
+        <div>
+
+          <div class="research-label">
+            We're building with landlords
+          </div>
+
+          <h3>
+            Own or manage a rental property?
+          </h3>
+
+          <p>
+            We're currently speaking with landlords about tenant
+            screening, deposits, payment management and what would
+            make a managed rental service genuinely useful.
+            The survey takes about three minutes.
+          </p>
+
+        </div>
+
+        <a href="landlord-survey.html" class="btn btn-primary">
+          Share Your Feedback →
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
 
 
   <!-- AFTER MOVE-IN -->
@@ -1400,15 +1504,14 @@
       </div>
 
       <h2 class="section-title">
-        We're still here after the keys are handed over.
+        The rental relationship doesn't end when the keys are handed over.
       </h2>
 
       <p class="section-description">
-        ResolvedIQ isn't simply another property listing site.
-        The managed rental experience continues throughout
-        the tenancy.
+        ResolvedIQ is being designed as more than a property listing
+        site. The goal is a managed rental experience that continues
+        throughout the tenancy.
       </p>
-
 
       <div class="managed-grid">
 
@@ -1417,31 +1520,29 @@
           <strong>Payments</strong>
 
           <p>
-            Clear payment records, reminders and rental
-            collection administration.
+            Clearer payment records, reminders and rental payment
+            administration.
           </p>
 
         </div>
-
 
         <div class="managed-card">
 
-          <strong>Maintenance</strong>
+          <strong>Coordination</strong>
 
           <p>
-            Tenant concerns documented and coordinated through
-            a structured process.
+            Tenant concerns and property issues documented and
+            routed through a structured process.
           </p>
 
         </div>
-
 
         <div class="managed-card">
 
           <strong>Records</strong>
 
           <p>
-            Important tenancy activity maintained in a clearer
+            Important tenancy activity organized into a clearer
             rental history.
           </p>
 
@@ -1470,9 +1571,9 @@
 
       <p>
         Better access for tenants shouldn't mean removing landlord
-        protection. ResolvedIQ uses verification, structured
-        processes, human review and clear records to create a
-        better rental experience for both sides.
+        protection. ResolvedIQ is being designed around verification,
+        structured processes, human review and clearer records so
+        both sides can make better-informed rental decisions.
       </p>
 
     </div>
@@ -1480,7 +1581,7 @@
   </section>
 
 
-  <!-- CTA -->
+  <!-- FINAL CTA -->
   <section class="cta-section">
 
     <div class="container">
@@ -1488,23 +1589,23 @@
       <div class="cta-box">
 
         <h2>
-          A simpler rental experience starts here.
+          Help us build a better way to rent.
         </h2>
 
         <p>
-          Whether you're searching for your next home or looking
-          for a better way to manage your rental property,
-          ResolvedIQ helps bring the pieces together.
+          ResolvedIQ is currently validating its rental model with
+          landlords and property owners. If you manage a rental
+          property, we'd like your perspective.
         </p>
 
         <div class="cta-actions">
 
-          <a href="#tenants" class="btn btn-white">
-            Find a Home →
+          <a href="landlord-survey.html" class="btn btn-white">
+            Take the Landlord Survey →
           </a>
 
-          <a href="#landlords" class="btn btn-outline-dark">
-            List Your Property
+          <a href="#how" class="btn btn-outline-dark">
+            Explore How It Works
           </a>
 
         </div>
@@ -1525,7 +1626,11 @@
 
         <div class="footer-brand">
 
-          <a href="#" class="footer-logo" aria-label="ResolvedIQ Home">
+          <a
+            href="index.html"
+            class="footer-logo"
+            aria-label="ResolvedIQ Home"
+          >
 
             <img
               src="assets/resolvediq-logo.svg"
@@ -1535,9 +1640,9 @@
           </a>
 
           <p>
-            Managed renting, made simpler. ResolvedIQ helps tenants
-            and landlords navigate verification, payments and
-            ongoing tenancy through one managed rental experience.
+            Managed renting, made simpler. ResolvedIQ is exploring
+            a more structured way for tenants and landlords to
+            navigate verification, payments and ongoing tenancy.
           </p>
 
         </div>
@@ -1550,7 +1655,7 @@
             <h4>Rent</h4>
 
             <a href="#tenants">
-              Find a Home
+              For Tenants
             </a>
 
             <a href="#how">
@@ -1565,10 +1670,10 @@
             <h4>Landlords</h4>
 
             <a href="#landlords">
-              List a Property
+              For Landlords
             </a>
 
-            <a href="#">
+            <a href="landlord-survey.html">
               Landlord Survey
             </a>
 
@@ -1605,8 +1710,8 @@
         </span>
 
         <span>
-          ResolvedIQ does not guarantee tenant rent payments.
-          Rental terms remain subject to landlord approval.
+          ResolvedIQ does not guarantee tenant approval or rent
+          payments. Rental terms remain subject to landlord approval.
         </span>
 
       </div>
